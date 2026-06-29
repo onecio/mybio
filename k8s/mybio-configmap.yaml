@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mybio-config
+  namespace: applications
+data:
+  NODE_ENV: "production"
+  PORT: "3000"
+  HOSTNAME: "0.0.0.0"
+  NEXT_TELEMETRY_DISABLED: "1"
+  NEXT_PUBLIC_SITE_URL: "https://mybio.ecomnix.com.br"
+  NEXT_PUBLIC_SUPABASE_URL: ""
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ""
+  NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ""
+  CLOUDINARY_UPLOAD_FOLDER: "mybio-premium"
