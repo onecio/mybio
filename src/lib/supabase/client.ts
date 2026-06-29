@@ -1,12 +1,14 @@
 import { createBrowserClient } from "@supabase/ssr";
 
-export function createSupabaseBrowserClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+import { getSupabaseConfig } from "@/lib/supabase/config";
+import type { Database } from "@/types/supabase";
 
-  if (!url || !anonKey) {
+export function createSupabaseBrowserClient() {
+  const { url, publishableKey } = getSupabaseConfig();
+
+  if (!url || !publishableKey) {
     return null;
   }
 
-  return createBrowserClient(url, anonKey);
+  return createBrowserClient<Database>(url, publishableKey);
 }

@@ -1,16 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-function hasSupabaseEnv() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  );
-}
+import { getSupabaseConfig } from "@/lib/supabase/config";
+import type { Database } from "@/types/supabase";
 
-function hasSessionCookie(request: NextRequest) {
-  return request.cookies
-    .getAll()
-    .some(({ name }) => /sb-.*auth-token|sb-access-token|supabase-auth-token/i.test(name));
+function hasSupabaseEnv() {
+  return getSupabaseConfig().isConfigured;
 }
 
 export async function updateSession(request: NextRequest) {
@@ -20,10 +15,15 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  if (hasSupabaseEnv()) {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  if (!hasSupabaseEnv()) {
+    return response;
+  }
+
+  const { url, publishableKey } = getSupabaseConfig();
+
+  const supabase = createServerClient<Database>(
+      url!,
+      publishableKey!,
       {
         cookies: {
           getAll() {
@@ -39,18 +39,29 @@ export async function updateSession(request: NextRequest) {
       },
     );
 
-    try {
-      await supabase.auth.getUser();
-    } catch {
-      // fallback silencioso para manter o middleware resiliente sem configuração real
-    }
-  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (request.nextUrl.pathname.startsWith("/dashboard") && !hasSessionCookie(request)) {
+  const pathname = request.nextUrl.pathname;
+  const isAuthPage =
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/forgot-password" ||
+    pathname === "/update-password";
+
+  if (pathname.startsWith("/dashboard") && !user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (isAuthPage && user && pathname !== "/update-password") {
+    const dashboardUrl = request.nextUrl.clone();
+    dashboardUrl.pathname = "/dashboard";
+    dashboardUrl.searchParams.delete("next");
+    return NextResponse.redirect(dashboardUrl);
   }
 
   return response;

@@ -1,18 +1,36 @@
 import { Check } from "lucide-react";
 
+import { selectThemeAction } from "@/actions/dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
-import { Button } from "@/components/ui/button";
+import { StatusMessage } from "@/components/forms/status-message";
+import { SubmitButton } from "@/components/forms/submit-button";
 import { SurfaceCard } from "@/components/ui/surface-card";
-import { themePresets } from "@/lib/mock-data";
+import { getDashboardData, toThemePreset } from "@/lib/queries/mybio";
 
-export default function DashboardThemesPage() {
+export default async function DashboardThemesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; success?: string }>;
+}) {
+  const params = await searchParams;
+  const dashboardData = await getDashboardData();
+
+  if (!dashboardData) {
+    return null;
+  }
+
+  const themePresets = dashboardData.themes.map((theme) =>
+    toThemePreset(theme, theme.id === dashboardData.profile?.theme_id),
+  );
+
   return (
     <div className="grid gap-6">
       <DashboardHeader
         title="Temas e identidade"
-        description="Escolha a paleta que melhor traduz sua marca e mantenha coerência visual em todo o perfil."
-        actionLabel="Aplicar tema"
+        description="Escolha o tema salvo no Supabase para atualizar a aparência da página pública sem depender de mocks."
       />
+
+      <StatusMessage error={params.error} success={params.success} />
 
       <div className="grid gap-5 lg:grid-cols-3">
         {themePresets.map((theme) => (
@@ -49,9 +67,15 @@ export default function DashboardThemesPage() {
                   style={{ backgroundColor: theme.ring }}
                 />
               </div>
-              <Button variant={theme.selected ? "primary" : "secondary"}>
-                {theme.selected ? "Ativo" : "Selecionar"}
-              </Button>
+              <form action={selectThemeAction}>
+                <input type="hidden" name="presetId" value={theme.id} />
+                <input type="hidden" name="accentHex" value={theme.surface} />
+                <SubmitButton
+                  label={theme.selected ? "Ativo" : "Selecionar"}
+                  pendingLabel="Aplicando..."
+                  variant={theme.selected ? "primary" : "secondary"}
+                />
+              </form>
             </div>
           </SurfaceCard>
         ))}

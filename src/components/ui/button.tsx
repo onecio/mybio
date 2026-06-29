@@ -13,6 +13,7 @@ interface ButtonProps {
   size?: ButtonSize;
   className?: string;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 const variantClasses: Record<ButtonVariant, string> = {
@@ -36,9 +37,10 @@ export function Button({
   size = "md",
   className,
   type = "button",
+  disabled = false,
 }: ButtonProps) {
   const classes = cn(
-    "inline-flex items-center justify-center rounded-full font-semibold tracking-[-0.02em] transition-all duration-200",
+    "inline-flex items-center justify-center rounded-full font-semibold tracking-[-0.02em] transition-all duration-200 disabled:pointer-events-none disabled:opacity-60",
     sizeClasses[size],
     variantClasses[variant],
     className,
@@ -53,7 +55,7 @@ export function Button({
   }
 
   return (
-    <button className={classes} type={type}>
+    <button className={classes} type={type} disabled={disabled}>
       {children}
     </button>
   );

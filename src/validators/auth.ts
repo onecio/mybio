@@ -10,7 +10,7 @@ export const registerSchema = loginSchema.extend({
   username: z
     .string()
     .min(3, "Seu username precisa ter no mínimo 3 caracteres.")
-    .regex(/^[a-z0-9_]+$/, "Use apenas letras minúsculas, números e underscore."),
+    .regex(/^[a-z0-9_-]+$/, "Use apenas letras minúsculas, números, hífen e underscore."),
   acceptTerms: z.boolean().refine((value) => value, {
     message: "Você precisa aceitar os termos.",
   }),

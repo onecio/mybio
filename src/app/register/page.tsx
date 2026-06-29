@@ -1,10 +1,18 @@
 import Link from "next/link";
 
+import { registerAction } from "@/actions/auth";
 import { AuthShell } from "@/components/auth/auth-shell";
-import { Button } from "@/components/ui/button";
+import { StatusMessage } from "@/components/forms/status-message";
+import { SubmitButton } from "@/components/forms/submit-button";
 import { Field, TextInput } from "@/components/ui/field";
 
-export default function RegisterPage() {
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; success?: string }>;
+}) {
+  const params = await searchParams;
+
   return (
     <AuthShell
       eyebrow="criar conta"
@@ -27,34 +35,33 @@ export default function RegisterPage() {
           Crie sua conta MyBio
         </h2>
         <p className="text-sm leading-7 text-stone-600">
-          A experiência já nasce pronta para integrar autenticação, armazenamento de mídia e
-          personalização avançada no próximo passo.
+          Seu perfil base é criado no Supabase junto com a página pública inicial, pronto para
+          personalização no dashboard.
         </p>
       </div>
 
-      <form className="grid gap-4">
+      <form action={registerAction} className="grid gap-4">
+        <StatusMessage error={params.error} success={params.success} />
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Nome">
-            <TextInput type="text" placeholder="Seu nome" />
+            <TextInput type="text" name="name" placeholder="Seu nome" required />
           </Field>
           <Field label="Username">
-            <TextInput type="text" placeholder="meuperfil" />
+            <TextInput type="text" name="username" placeholder="meu-perfil" required />
           </Field>
         </div>
         <Field label="E-mail">
-          <TextInput type="email" placeholder="voce@exemplo.com" />
+          <TextInput type="email" name="email" placeholder="voce@exemplo.com" required />
         </Field>
         <Field label="Senha">
-          <TextInput type="password" placeholder="Crie uma senha segura" />
+          <TextInput type="password" name="password" placeholder="Crie uma senha segura" required />
         </Field>
         <label className="flex items-start gap-3 rounded-[1.4rem] border border-stone-200/70 bg-stone-50/70 px-4 py-3 text-sm leading-6 text-stone-600">
-          <input type="checkbox" className="mt-1 size-4 rounded border-stone-300" />
-          Aceito os termos e entendo que esta base já está pronta para futura autenticação via
-          Supabase.
+          <input type="checkbox" name="acceptTerms" className="mt-1 size-4 rounded border-stone-300" />
+          Aceito os termos e autorizo a criação da minha conta e da minha página inicial no
+          MyBio via Supabase.
         </label>
-        <Button type="submit" size="lg" className="mt-2">
-          Criar conta premium
-        </Button>
+        <SubmitButton label="Criar conta premium" pendingLabel="Criando conta..." size="lg" className="mt-2" />
       </form>
     </AuthShell>
   );

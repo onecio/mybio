@@ -1,10 +1,18 @@
 import Link from "next/link";
 
+import { loginAction } from "@/actions/auth";
 import { AuthShell } from "@/components/auth/auth-shell";
-import { Button } from "@/components/ui/button";
+import { StatusMessage } from "@/components/forms/status-message";
+import { SubmitButton } from "@/components/forms/submit-button";
 import { Field, TextInput } from "@/components/ui/field";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; success?: string; next?: string }>;
+}) {
+  const params = await searchParams;
+
   return (
     <AuthShell
       eyebrow="acesso"
@@ -27,30 +35,27 @@ export default function LoginPage() {
           Bem-vindo de volta
         </h2>
         <p className="text-sm leading-7 text-stone-600">
-          Use suas credenciais para voltar ao dashboard. A integração real com autenticação
-          pode ser conectada depois com Supabase.
+          Faça login com Supabase para acessar seu dashboard, editar sua página pública e
+          acompanhar cliques reais.
         </p>
       </div>
 
-      <form className="grid gap-4">
+      <form action={loginAction} className="grid gap-4">
+        <StatusMessage error={params.error} success={params.success} />
+        <input type="hidden" name="next" value={params.next ?? "/dashboard"} />
         <Field label="E-mail">
-          <TextInput type="email" placeholder="voce@exemplo.com" />
+          <TextInput type="email" name="email" placeholder="voce@exemplo.com" required />
         </Field>
         <Field label="Senha">
-          <TextInput type="password" placeholder="Digite sua senha" />
+          <TextInput type="password" name="password" placeholder="Digite sua senha" required />
         </Field>
-        <div className="flex items-center justify-between gap-4 text-sm">
-          <label className="flex items-center gap-2 text-stone-600">
-            <input type="checkbox" className="size-4 rounded border-stone-300" />
-            Manter conectado
-          </label>
+        <div className="flex flex-col gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-stone-500">Sessão segura com cookies SSR do Supabase.</p>
           <Link href="/forgot-password" className="font-semibold text-stone-950">
             Esqueci minha senha
           </Link>
         </div>
-        <Button type="submit" size="lg" className="mt-2">
-          Entrar no painel
-        </Button>
+        <SubmitButton label="Entrar no painel" pendingLabel="Entrando..." size="lg" className="mt-2" />
       </form>
     </AuthShell>
   );

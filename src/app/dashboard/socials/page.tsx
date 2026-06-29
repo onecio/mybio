@@ -1,8 +1,13 @@
 import { BriefcaseBusiness, Camera, Globe, Music2 } from "lucide-react";
 
+import { createSocialAction, deleteSocialAction } from "@/actions/dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { EmptyState } from "@/components/dashboard/empty-state";
+import { StatusMessage } from "@/components/forms/status-message";
+import { SubmitButton } from "@/components/forms/submit-button";
+import { Field, TextInput } from "@/components/ui/field";
 import { SurfaceCard } from "@/components/ui/surface-card";
-import { mockSocials } from "@/lib/mock-data";
+import { getDashboardData } from "@/lib/queries/mybio";
 
 const iconMap = {
   instagram: Camera,
@@ -10,19 +15,32 @@ const iconMap = {
   tiktok: Music2,
 };
 
-export default function DashboardSocialsPage() {
+export default async function DashboardSocialsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string; success?: string }>;
+}) {
+  const params = await searchParams;
+  const dashboardData = await getDashboardData();
+
+  if (!dashboardData) {
+    return null;
+  }
+
   return (
     <div className="grid gap-6">
       <DashboardHeader
         title="Redes sociais"
-        description="Conecte seus canais principais e deixe o perfil preparado para distribuir tráfego de forma elegante."
-        actionLabel="Conectar rede"
+        description="Conecte canais reais ao seu perfil para reforçar distribuição de audiência e prova social."
       />
+
+      <StatusMessage error={params.error} success={params.success} />
 
       <div className="grid gap-5 xl:grid-cols-[1fr_0.9fr]">
         <SurfaceCard className="rounded-[2.2rem] p-6">
           <div className="grid gap-4">
-            {mockSocials.map((social) => {
+            {dashboardData.socials.length > 0 ? (
+              dashboardData.socials.map((social) => {
               const Icon = iconMap[social.platform as keyof typeof iconMap] ?? Globe;
 
               return (
@@ -39,41 +57,58 @@ export default function DashboardSocialsPage() {
                       <p className="text-sm text-stone-500">{social.handle}</p>
                     </div>
                   </div>
-                  <div className="text-left md:text-right">
-                    <p className="text-xs uppercase tracking-[0.18em] text-stone-400">
-                      audiência
-                    </p>
-                    <p className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-stone-950">
-                      {social.followers}
-                    </p>
+                  <div className="flex flex-wrap items-center gap-2 md:justify-end">
+                    <a
+                      href={social.url}
+                      className="rounded-full border border-stone-200 bg-white px-4 py-2 text-sm font-medium text-stone-700"
+                    >
+                      abrir
+                    </a>
+                    <form action={deleteSocialAction}>
+                      <input type="hidden" name="socialId" value={social.id} />
+                      <SubmitButton
+                        label="Remover"
+                        pendingLabel="Removendo..."
+                        variant="ghost"
+                      />
+                    </form>
                   </div>
                 </div>
               );
-            })}
+              })
+            ) : (
+              <EmptyState
+                eyebrow="nenhuma rede conectada"
+                title="Adicione suas redes para ampliar a descoberta."
+                description="Instagram, LinkedIn, TikTok e outros canais ajudam a dar contexto e credibilidade à sua página pública."
+              />
+            )}
           </div>
         </SurfaceCard>
 
         <SurfaceCard className="rounded-[2.2rem] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
-            estratégia
+            conectar nova rede
           </p>
           <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
             Distribua o tráfego com intenção
           </h2>
-          <div className="mt-6 grid gap-4">
-            {[
-              "Leve o público de awareness para links de conversão.",
-              "Destaque canais com melhor retenção e prova social.",
-              "Use handles consistentes para reforçar marca pessoal.",
-            ].map((item) => (
-              <div
-                key={item}
-                className="rounded-[1.5rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4 text-sm leading-7 text-stone-600"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
+          <form action={createSocialAction} className="mt-6 grid gap-4">
+            <Field label="Plataforma">
+              <TextInput
+                name="platform"
+                placeholder="instagram, linkedin, tiktok, youtube..."
+                required
+              />
+            </Field>
+            <Field label="Handle" hint="Usado apenas para validar e orientar a URL.">
+              <TextInput name="handle" placeholder="@seuperfil" required />
+            </Field>
+            <Field label="URL pública">
+              <TextInput name="url" type="url" placeholder="https://..." required />
+            </Field>
+            <SubmitButton label="Salvar rede" pendingLabel="Salvando..." />
+          </form>
         </SurfaceCard>
       </div>
     </div>

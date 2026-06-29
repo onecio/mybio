@@ -11,7 +11,7 @@ interface KpiCardProps {
 export function KpiCard({ item }: KpiCardProps) {
   return (
     <SurfaceCard className="rounded-[1.8rem] p-5">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm text-stone-500">{item.title}</p>
           <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
@@ -20,7 +20,7 @@ export function KpiCard({ item }: KpiCardProps) {
         </div>
         <div
           className={cn(
-            "flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold",
+            "inline-flex w-fit items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold",
             item.trend === "up"
               ? "bg-emerald-50 text-emerald-600"
               : "bg-stone-100 text-stone-600",
