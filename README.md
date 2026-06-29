@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MyBio Premium
 
-## Getting Started
+Base premium em Next.js 16 para uma alternativa elegante ao Linktree, com landing page de alto impacto, páginas públicas de perfil e dashboard pronto para evolução com Supabase e Cloudinary.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 + App Router
+- TypeScript
+- Tailwind CSS 4
+- `lucide-react` para ícones
+- `zod` para schemas
+- Helpers preparados para `@supabase/ssr`, `@supabase/supabase-js` e `cloudinary`
+
+## Como rodar
+
+1. Instale as dependências:
+
+```bash
+npm install
+```
+
+2. Copie o arquivo de ambiente:
+
+```bash
+# Windows PowerShell
+Copy-Item .env.example .env.local
+
+# macOS / Linux
+cp .env.example .env.local
+```
+
+3. Inicie o ambiente de desenvolvimento:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Acesse:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```txt
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Rotas principais
 
-## Learn More
+- `/` — landing premium do MyBio
+- `/login` — login
+- `/register` — cadastro
+- `/forgot-password` — recuperação de senha
+- `/dashboard` — visão geral do painel
+- `/dashboard/profile` — perfil
+- `/dashboard/links` — links
+- `/dashboard/socials` — redes sociais
+- `/dashboard/themes` — temas
+- `/dashboard/analytics` — analytics
+- `/dashboard/settings` — configurações
+- `/:username` — página pública mockada
 
-To learn more about Next.js, take a look at the following resources:
+## Integrações futuras
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Preencha as variáveis do Supabase e Cloudinary em `.env.local`
+- Os dados atuais estão centralizados em `src/lib/mock-data.ts`
+- Os schemas principais ficam em `src/validators`
+- O middleware de proteção do dashboard está em `src/middleware.ts`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev
+npm run lint
+npm run build
+```
