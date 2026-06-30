@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { loginAction } from "@/actions/auth";
 import { AuthShell } from "@/components/auth/auth-shell";
+import { SocialLogin } from "@/components/auth/social-login";
 import { StatusMessage } from "@/components/forms/status-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Field, TextInput } from "@/components/ui/field";
@@ -57,6 +58,8 @@ export default async function LoginPage({
         </div>
         <SubmitButton label="Entrar no painel" pendingLabel="Entrando..." size="lg" className="mt-2" />
       </form>
+
+      <SocialLogin nextPath={params.next} />
     </AuthShell>
   );
 }

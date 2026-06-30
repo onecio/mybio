@@ -10,6 +10,34 @@ import {
   registerSchema,
 } from "@/validators/auth";
 
+const socialProviders = ["google", "github"] as const;
+
+function getAuthErrorMessage(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("invalid login credentials")) {
+    return "E-mail ou senha inválidos.";
+  }
+
+  if (normalized.includes("email not confirmed")) {
+    return "Confirme seu e-mail antes de entrar. Verifique também a caixa de spam.";
+  }
+
+  if (normalized.includes("email rate limit exceeded")) {
+    return "O limite temporário de envio de e-mails foi atingido. Aguarde alguns minutos ou use o login social.";
+  }
+
+  if (normalized.includes("provider is not enabled") || normalized.includes("unsupported provider")) {
+    return "Este provedor social ainda não está habilitado no Supabase.";
+  }
+
+  if (normalized.includes("user already registered")) {
+    return "Já existe uma conta com este e-mail. Faça login para continuar.";
+  }
+
+  return message;
+}
+
 function getString(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
@@ -68,7 +96,7 @@ export async function loginAction(formData: FormData) {
 
   if (error) {
     buildRedirect("/login", {
-      error: error.message,
+      error: getAuthErrorMessage(error.message),
       next: nextPath,
     });
   }
@@ -112,7 +140,7 @@ export async function registerAction(formData: FormData) {
   });
 
   if (error) {
-    buildRedirect("/register", { error: error.message });
+    buildRedirect("/register", { error: getAuthErrorMessage(error.message) });
   }
 
   if (!data.session) {
@@ -122,6 +150,47 @@ export async function registerAction(formData: FormData) {
   }
 
   redirect("/dashboard");
+}
+
+export async function socialLoginAction(formData: FormData) {
+  const provider = getString(formData, "provider");
+  const nextPath = getSafeNextPath(getString(formData, "next"));
+
+  if (!socialProviders.includes(provider as (typeof socialProviders)[number])) {
+    buildRedirect("/login", {
+      error: "Provedor social inválido.",
+      next: nextPath,
+    });
+  }
+
+  const supabase = await createSupabaseServerClient();
+
+  if (!supabase) {
+    buildRedirect("/login", {
+      error: "Supabase não configurado. Revise as variáveis de ambiente.",
+      next: nextPath,
+    });
+  }
+
+  const callbackUrl = new URL("/auth/callback", getSiteUrl());
+  callbackUrl.searchParams.set("next", nextPath);
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: provider as (typeof socialProviders)[number],
+    options: {
+      redirectTo: callbackUrl.toString(),
+      skipBrowserRedirect: true,
+    },
+  });
+
+  if (error || !data.url) {
+    buildRedirect("/login", {
+      error: getAuthErrorMessage(error?.message ?? "Não foi possível iniciar o login social."),
+      next: nextPath,
+    });
+  }
+
+  redirect(data.url);
 }
 
 export async function forgotPasswordAction(formData: FormData) {
