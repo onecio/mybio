@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { getSafeHttpUrl } from "@/lib/security/url";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(
@@ -8,12 +9,21 @@ export async function GET(
 ) {
   const { id } = await params;
   const requestUrl = new URL(request.url);
-  const fallbackUrl = requestUrl.searchParams.get("url") ?? "/";
+  const fallbackUrl = new URL("/", requestUrl.origin);
   const referer = request.headers.get("referer");
   const userAgent = request.headers.get("user-agent");
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
+    return NextResponse.redirect(fallbackUrl);
+  }
+
+  const { data: resolvedDestination } = await supabase.rpc("resolve_public_link", {
+    link_id: id,
+  } as never);
+  const destination = getSafeHttpUrl(resolvedDestination);
+
+  if (!destination) {
     return NextResponse.redirect(fallbackUrl);
   }
 
@@ -28,5 +38,5 @@ export async function GET(
     } as never,
   );
 
-  return NextResponse.redirect(fallbackUrl);
+  return NextResponse.redirect(destination, 307);
 }

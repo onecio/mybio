@@ -22,7 +22,6 @@ import {
   processSteps,
   showcasePages,
   socialProof,
-  testimonials,
 } from "@/lib/mock-data";
 
 const featureIconMap = {
@@ -40,28 +39,28 @@ export default function Home() {
       <FloatingHeader />
 
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-18 px-4 pt-6 md:gap-24 md:px-6 md:pt-10">
-        <section className="relative overflow-hidden rounded-[2.2rem] border border-white/70 bg-[radial-gradient(circle_at_top_left,_rgba(245,158,11,0.18),_transparent_28%),radial-gradient(circle_at_top_right,_rgba(56,189,248,0.12),_transparent_28%),radial-gradient(circle_at_bottom_left,_rgba(167,243,208,0.16),_transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(255,248,238,0.9)_100%)] px-5 py-6 shadow-[0_30px_120px_-50px_rgba(15,23,42,0.25)] md:rounded-[2.8rem] md:px-10 md:py-10">
-          <div className="absolute right-10 top-10 hidden size-44 rounded-full bg-violet-200/45 blur-3xl lg:block" />
-          <div className="absolute bottom-10 left-10 hidden size-44 rounded-full bg-emerald-200/50 blur-3xl lg:block" />
+        <section className="relative overflow-hidden rounded-[1.8rem] border border-[var(--brand-line)] bg-[linear-gradient(145deg,var(--brand-surface)_0%,#edf0e9_58%,#eee2d8_100%)] px-5 py-6 shadow-[0_30px_110px_-58px_rgba(20,25,26,0.42)] md:rounded-[2.4rem] md:px-10 md:py-10">
+          <div className="absolute right-10 top-10 hidden size-44 rounded-full bg-[var(--brand-sage)]/25 blur-3xl lg:block" />
+          <div className="absolute bottom-10 left-10 hidden size-44 rounded-full bg-[var(--brand-copper)]/10 blur-3xl lg:block" />
 
           <div className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr]">
             <div className="relative z-10 grid gap-8">
               <div className="grid gap-5">
-                <Badge className="w-fit">premium bio experience</Badge>
+                <Badge className="w-fit">presença digital com propósito</Badge>
                 <div className="grid gap-5">
                   <h1 className="max-w-4xl font-display text-[3.15rem] leading-[0.92] tracking-[-0.06em] text-stone-950 sm:text-[4.2rem] md:text-7xl xl:text-[6.8rem]">
-                    A alternativa premium ao Linktree para quem quer presença forte.
+                    Sua presença digital, organizada com clareza e identidade.
                   </h1>
                   <p className="max-w-2xl text-base leading-7 text-stone-600 md:text-xl md:leading-8">
-                    O MyBio une design sofisticado, estrutura moderna e foco em conversão
-                    para creators, experts e marcas que não aceitam uma bio page comum.
+                    Reúna conteúdo, comunidade e oportunidades em uma página rápida,
+                    mensurável e criada para representar você sem aparência de template.
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Button href="/register" size="lg" className="gap-2">
-                  Criar página premium <ArrowRight className="size-4" />
+                  Criar meu MyBio <ArrowRight className="size-4" />
                 </Button>
                 <Button href="/dashboard" size="lg" variant="secondary">
                   Explorar dashboard
@@ -180,32 +179,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="depoimentos" className="grid gap-8">
-          <SectionHeading
-            eyebrow="depoimentos"
-            title="Quem usa sente a diferença entre um link comum e uma experiência premium."
-            description="O impacto visual acelera confiança, melhora percepção e ajuda a converter melhor desde o primeiro clique."
-          />
-          <div className="grid gap-5 lg:grid-cols-3">
-            {testimonials.map((item) => (
-              <SurfaceCard key={item.name} className="rounded-[2rem] p-6">
-                <p className="text-base leading-8 text-stone-700">“{item.quote}”</p>
-                <div className="mt-6 flex items-center gap-3">
-                  <div className="flex size-12 items-center justify-center rounded-[1.4rem] bg-[linear-gradient(135deg,#f59e0b_0%,#c4b5fd_100%)] text-sm font-bold text-stone-950">
-                    {item.avatar}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-stone-950">{item.name}</p>
-                    <p className="text-sm text-stone-500">{item.role}</p>
-                  </div>
-                </div>
-              </SurfaceCard>
-            ))}
-          </div>
-        </section>
-
-        <section className="relative overflow-hidden rounded-[2.2rem] border border-white/70 bg-[linear-gradient(135deg,rgba(245,158,11,0.95)_0%,rgba(245,158,11,0.78)_18%,rgba(56,189,248,0.78)_58%,rgba(139,92,246,0.72)_100%)] p-6 text-white shadow-[0_40px_120px_-45px_rgba(245,158,11,0.6)] md:rounded-[2.8rem] md:p-10">
-          <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.24),_transparent_58%)]" />
+        <section className="relative overflow-hidden rounded-[2rem] border border-[var(--brand-petrol-deep)] bg-[var(--brand-petrol-deep)] p-6 text-white shadow-[0_36px_100px_-52px_rgba(10,61,62,0.8)] md:rounded-[2.4rem] md:p-10">
+          <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_center,_rgba(146,167,154,0.28),_transparent_62%)]" />
           <div className="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
             <div className="grid gap-4">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/70">

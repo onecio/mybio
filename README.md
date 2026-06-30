@@ -54,7 +54,7 @@ http://localhost:3000
 - `/dashboard/themes` — temas
 - `/dashboard/analytics` — analytics
 - `/dashboard/settings` — configurações
-- `/:username` — página pública mockada
+- `/:username` — página pública conectada ao Supabase
 
 ## Integrações futuras
 
@@ -74,7 +74,7 @@ O projeto suporta e-mail/senha e OAuth com Google ou GitHub. Para o ambiente de 
 3. Em **Authentication > Providers**, habilite Google e/ou GitHub com credenciais OAuth próprias.
 4. No provedor social, use como callback a URL exibida pelo Supabase, no formato:
    `https://<project-ref>.supabase.co/auth/v1/callback`.
-5. Para cadastro por e-mail, configure SMTP próprio antes de exigir confirmação de e-mail. Em ambientes sem SMTP, desabilite temporariamente a confirmação para não impedir o primeiro acesso.
+5. Mantenha a confirmação de e-mail habilitada. O link usa a `Site URL` e a lista de redirects do Supabase; SMTP próprio é opcional e não deve ser usado como requisito para desabilitar a confirmação.
 
 Nunca armazene Client Secrets, service role keys ou senhas no repositório. As chaves públicas do Supabase podem ficar no `ConfigMap`; segredos administrativos devem ficar no `Secret` do cluster.
 
@@ -82,6 +82,8 @@ Nunca armazene Client Secrets, service role keys ou senhas no repositório. As c
 
 ```bash
 npm run dev
+npm test
 npm run lint
+npm run typecheck
 npm run build
 ```

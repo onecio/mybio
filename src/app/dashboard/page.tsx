@@ -23,27 +23,30 @@ export default async function DashboardPage({
   }
 
   const previewProfile = toPreviewProfile(dashboardData);
+  const totalViews = dashboardData.analytics?.total_views ?? 0;
+  const totalClicks = dashboardData.analytics?.total_clicks ?? 0;
+  const clickRate = totalViews > 0 ? (totalClicks / totalViews) * 100 : 0;
   const kpis = [
     {
-      title: "Cliques totais",
-      value: String(dashboardData.analytics?.total_clicks ?? 0),
-      change: `${dashboardData.analytics?.clicks_last_7_days ?? 0} na última semana`,
+      title: "Visualizações",
+      value: String(totalViews),
+      change: `${dashboardData.analytics?.views_last_7_days ?? 0} na última semana`,
       trend: "up" as const,
+      detail: "Visitantes únicos por dia",
+    },
+    {
+      title: "Cliques",
+      value: String(totalClicks),
+      change: `${dashboardData.analytics?.clicks_last_7_days ?? 0} na última semana`,
+      trend: "steady" as const,
       detail: "Interações registradas",
     },
     {
-      title: "Cliques hoje",
-      value: String(dashboardData.analytics?.clicks_today ?? 0),
+      title: "Taxa de clique",
+      value: `${clickRate.toFixed(1).replace(".", ",")}%`,
       change: `${dashboardData.links.length} links configurados`,
       trend: "steady" as const,
-      detail: "Movimento do dia",
-    },
-    {
-      title: "Redes conectadas",
-      value: String(dashboardData.socials.length),
-      change: dashboardData.profile?.is_published ? "Página publicada" : "Perfil em rascunho",
-      trend: "steady" as const,
-      detail: "Canais ativos",
+      detail: "Cliques por visualização",
     },
   ];
 

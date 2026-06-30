@@ -18,11 +18,11 @@ interface ButtonProps {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-[linear-gradient(135deg,var(--amber-500),#ffdca8)] text-stone-950 shadow-[0_20px_60px_-22px_rgba(245,158,11,0.7)] hover:-translate-y-0.5",
+    "bg-[var(--brand-petrol)] text-white shadow-[0_18px_42px_-22px_rgba(10,61,62,0.7)] hover:-translate-y-0.5 hover:bg-[var(--brand-petrol-deep)]",
   secondary:
-    "border border-white/70 bg-white/80 text-stone-900 shadow-[0_16px_40px_-24px_rgba(15,23,42,0.3)] hover:bg-white",
+    "border border-[var(--brand-line)] bg-[var(--brand-surface)] text-[var(--brand-ink)] shadow-[0_16px_40px_-28px_rgba(20,25,26,0.28)] hover:border-[var(--brand-petrol)]",
   ghost:
-    "text-stone-700 hover:bg-white/70",
+    "text-[var(--brand-muted)] hover:bg-[var(--brand-sage-soft)] hover:text-[var(--brand-ink)]",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -40,7 +40,7 @@ export function Button({
   disabled = false,
 }: ButtonProps) {
   const classes = cn(
-    "inline-flex items-center justify-center rounded-full font-semibold tracking-[-0.02em] transition-all duration-200 disabled:pointer-events-none disabled:opacity-60",
+    "inline-flex items-center justify-center rounded-[1rem] font-semibold tracking-[-0.02em] transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-petrol)] disabled:pointer-events-none disabled:opacity-60",
     sizeClasses[size],
     variantClasses[variant],
     className,

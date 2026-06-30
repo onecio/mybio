@@ -52,9 +52,14 @@ create table if not exists public.profile_links (
   profile_id uuid not null references public.profile_pages(id) on delete cascade,
   title text not null,
   url text not null,
+  description text not null default '',
   icon text,
+  thumbnail_url text,
   position integer not null,
   is_active boolean not null default true,
+  is_featured boolean not null default false,
+  scheduled_at timestamptz,
+  expires_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint profile_links_unique_position unique (profile_id, position)
@@ -80,6 +85,17 @@ create table if not exists public.link_clicks (
   user_agent text
 );
 
+create table if not exists public.page_views (
+  id uuid primary key default gen_random_uuid(),
+  profile_id uuid not null references public.profile_pages(id) on delete cascade,
+  visitor_hash text not null,
+  viewed_on date not null default current_date,
+  viewed_at timestamptz not null default now(),
+  referer text,
+  user_agent text,
+  constraint page_views_daily_visitor unique (profile_id, visitor_hash, viewed_on)
+);
+
 create index if not exists idx_profile_pages_user_id on public.profile_pages(user_id);
 create unique index if not exists idx_profile_pages_username on public.profile_pages(username);
 create index if not exists idx_profile_pages_theme_id on public.profile_pages(theme_id);
@@ -88,6 +104,7 @@ create index if not exists idx_profile_socials_profile_id on public.profile_soci
 create index if not exists idx_link_clicks_link_id on public.link_clicks(link_id);
 create index if not exists idx_link_clicks_clicked_at on public.link_clicks(clicked_at);
 create index if not exists idx_link_clicks_link_clicked_at on public.link_clicks(link_id, clicked_at);
+create index if not exists idx_page_views_profile_viewed_at on public.page_views(profile_id, viewed_at desc);
 
 drop trigger if exists set_profiles_updated_at on public.profiles;
 create trigger set_profiles_updated_at
@@ -261,6 +278,7 @@ alter table public.profile_pages enable row level security;
 alter table public.profile_links enable row level security;
 alter table public.profile_socials enable row level security;
 alter table public.link_clicks enable row level security;
+alter table public.page_views enable row level security;
 
 drop policy if exists "profiles_select_own" on public.profiles;
 create policy "profiles_select_own"
@@ -341,11 +359,22 @@ on public.profile_links
 for select
 to anon, authenticated
 using (
-  exists (
+  (
+    profile_links.is_active = true
+    and (profile_links.scheduled_at is null or profile_links.scheduled_at <= now())
+    and (profile_links.expires_at is null or profile_links.expires_at > now())
+    and exists (
+      select 1
+      from public.profile_pages pp
+      where pp.id = profile_links.profile_id
+        and pp.is_published = true
+    )
+  )
+  or exists (
     select 1
     from public.profile_pages pp
     where pp.id = profile_links.profile_id
-      and (pp.is_published = true or pp.user_id = auth.uid())
+      and pp.user_id = auth.uid()
   )
 );
 
@@ -464,11 +493,6 @@ using (
 );
 
 drop policy if exists "link_clicks_insert_public" on public.link_clicks;
-create policy "link_clicks_insert_public"
-on public.link_clicks
-for insert
-to anon, authenticated
-with check (true);
 
 drop policy if exists "link_clicks_select_owner" on public.link_clicks;
 create policy "link_clicks_select_owner"
@@ -485,14 +509,27 @@ using (
   )
 );
 
-create or replace view public.public_profile_view as
+drop policy if exists "page_views_select_owner" on public.page_views;
+create policy "page_views_select_owner"
+on public.page_views
+for select
+to authenticated
+using (
+  exists (
+    select 1 from public.profile_pages pp
+    where pp.id = page_views.profile_id and pp.user_id = auth.uid()
+  )
+);
+
+create or replace view public.public_profile_view
+with (security_invoker = true) as
 select
   pp.id,
   pp.user_id,
   pp.username,
-  coalesce(pp.title, pr.name) as title,
+  coalesce(pp.title, 'Meu MyBio') as title,
   pp.description,
-  coalesce(pp.avatar_url, pr.avatar_url) as avatar_url,
+  pp.avatar_url,
   jsonb_build_object(
     'id', t.id,
     'name', t.name,
@@ -505,7 +542,10 @@ select
           'id', pl.id,
           'title', pl.title,
           'url', pl.url,
+          'description', pl.description,
           'icon', pl.icon,
+          'thumbnail_url', pl.thumbnail_url,
+          'is_featured', pl.is_featured,
           'position', pl.position
         )
         order by pl.position
@@ -513,6 +553,8 @@ select
       from public.profile_links pl
       where pl.profile_id = pp.id
         and pl.is_active = true
+        and (pl.scheduled_at is null or pl.scheduled_at <= now())
+        and (pl.expires_at is null or pl.expires_at > now())
     ),
     '[]'::jsonb
   ) as links,
@@ -532,11 +574,11 @@ select
     '[]'::jsonb
   ) as socials
 from public.profile_pages pp
-join public.profiles pr on pr.id = pp.user_id
 left join public.themes t on t.id = pp.theme_id
 where pp.is_published = true;
 
-create or replace view public.dashboard_profile_view as
+create or replace view public.dashboard_profile_view
+with (security_invoker = true) as
 select
   pp.id as profile_id,
   pp.user_id,
@@ -568,17 +610,38 @@ left join (
   group by pl.profile_id
 ) click_counts on click_counts.profile_id = pp.id;
 
-create or replace view public.analytics_summary_view as
+create or replace view public.analytics_summary_view
+with (security_invoker = true) as
 select
   pp.id as profile_id,
-  coalesce(count(lc.id), 0)::int as total_clicks,
-  coalesce(count(*) filter (where lc.clicked_at >= date_trunc('day', now())), 0)::int as clicks_today,
-  coalesce(count(*) filter (where lc.clicked_at >= now() - interval '7 days'), 0)::int as clicks_last_7_days,
-  coalesce(count(*) filter (where lc.clicked_at >= now() - interval '30 days'), 0)::int as clicks_last_30_days
+  coalesce(clicks.total_clicks, 0)::int as total_clicks,
+  coalesce(clicks.clicks_today, 0)::int as clicks_today,
+  coalesce(clicks.clicks_last_7_days, 0)::int as clicks_last_7_days,
+  coalesce(clicks.clicks_last_30_days, 0)::int as clicks_last_30_days,
+  coalesce(views.total_views, 0)::int as total_views,
+  coalesce(views.views_today, 0)::int as views_today,
+  coalesce(views.views_last_7_days, 0)::int as views_last_7_days,
+  coalesce(views.views_last_30_days, 0)::int as views_last_30_days
 from public.profile_pages pp
-left join public.profile_links pl on pl.profile_id = pp.id
-left join public.link_clicks lc on lc.link_id = pl.id
-group by pp.id;
+left join lateral (
+  select
+    count(lc.id) as total_clicks,
+    count(lc.id) filter (where lc.clicked_at >= date_trunc('day', now())) as clicks_today,
+    count(lc.id) filter (where lc.clicked_at >= now() - interval '7 days') as clicks_last_7_days,
+    count(lc.id) filter (where lc.clicked_at >= now() - interval '30 days') as clicks_last_30_days
+  from public.profile_links pl
+  left join public.link_clicks lc on lc.link_id = pl.id
+  where pl.profile_id = pp.id
+) clicks on true
+left join lateral (
+  select
+    count(pv.id) as total_views,
+    count(pv.id) filter (where pv.viewed_at >= date_trunc('day', now())) as views_today,
+    count(pv.id) filter (where pv.viewed_at >= now() - interval '7 days') as views_last_7_days,
+    count(pv.id) filter (where pv.viewed_at >= now() - interval '30 days') as views_last_30_days
+  from public.page_views pv
+  where pv.profile_id = pp.id
+) views on true;
 
 create or replace function public.get_profile_by_username(username text)
 returns jsonb
@@ -646,6 +709,19 @@ as $$
 declare
   inserted_id uuid;
 begin
+  if not exists (
+    select 1
+    from public.profile_links pl
+    join public.profile_pages pp on pp.id = pl.profile_id
+    where pl.id = increment_link_click.link_id
+      and pl.is_active = true
+      and pp.is_published = true
+      and (pl.scheduled_at is null or pl.scheduled_at <= now())
+      and (pl.expires_at is null or pl.expires_at > now())
+  ) then
+    return jsonb_build_object('success', false, 'reason', 'link_not_available');
+  end if;
+
   insert into public.link_clicks (
     link_id,
     referer,
@@ -669,10 +745,114 @@ begin
 end;
 $$;
 
+create or replace function public.record_profile_view(
+  profile_username text,
+  request_visitor_hash text,
+  request_referer text default null,
+  request_user_agent text default null
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target_profile_id uuid;
+  inserted_id uuid;
+begin
+  select id into target_profile_id
+  from public.profile_pages
+  where username = record_profile_view.profile_username
+    and is_published = true
+  limit 1;
+
+  if target_profile_id is null or length(request_visitor_hash) < 32 then
+    return jsonb_build_object('success', false);
+  end if;
+
+  insert into public.page_views (profile_id, visitor_hash, referer, user_agent)
+  values (
+    target_profile_id,
+    left(request_visitor_hash, 128),
+    left(request_referer, 2048),
+    left(request_user_agent, 512)
+  )
+  on conflict (profile_id, visitor_hash, viewed_on) do nothing
+  returning id into inserted_id;
+
+  return jsonb_build_object('success', true, 'recorded', inserted_id is not null);
+end;
+$$;
+
+create or replace function public.resolve_public_link(link_id uuid)
+returns text
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select pl.url
+  from public.profile_links pl
+  join public.profile_pages pp on pp.id = pl.profile_id
+  where pl.id = resolve_public_link.link_id
+    and pl.is_active = true
+    and pp.is_published = true
+    and (pl.scheduled_at is null or pl.scheduled_at <= now())
+    and (pl.expires_at is null or pl.expires_at > now())
+    and pl.url ~* '^https?://'
+  limit 1
+$$;
+
+create or replace function public.reorder_profile_links(ordered_ids uuid[])
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  owned_profile_id uuid;
+  expected_count integer;
+begin
+  select id into owned_profile_id
+  from public.profile_pages
+  where user_id = auth.uid()
+  limit 1;
+
+  if owned_profile_id is null then
+    raise exception 'profile_not_found';
+  end if;
+
+  select count(*) into expected_count
+  from public.profile_links
+  where profile_id = owned_profile_id;
+
+  if cardinality(ordered_ids) <> expected_count
+    or (select count(distinct id) from unnest(ordered_ids) as id) <> expected_count
+    or (select count(*) from public.profile_links where profile_id = owned_profile_id and id = any(ordered_ids)) <> expected_count then
+    raise exception 'invalid_link_order';
+  end if;
+
+  update public.profile_links
+  set position = position + 10000
+  where profile_id = owned_profile_id;
+
+  update public.profile_links pl
+  set position = ordered.position - 1
+  from unnest(ordered_ids) with ordinality as ordered(id, position)
+  where pl.id = ordered.id
+    and pl.profile_id = owned_profile_id;
+end;
+$$;
+
 grant usage on schema public to anon, authenticated, service_role;
 grant select on public.public_profile_view to anon, authenticated, service_role;
-grant select on public.dashboard_profile_view to authenticated, service_role;
-grant select on public.analytics_summary_view to authenticated, service_role;
+revoke all on public.dashboard_profile_view from anon, authenticated;
+revoke all on public.analytics_summary_view from anon, authenticated;
+grant select on public.dashboard_profile_view to service_role;
+grant select on public.analytics_summary_view to service_role;
 grant execute on function public.get_profile_by_username(text) to anon, authenticated, service_role;
 grant execute on function public.get_dashboard() to authenticated, service_role;
 grant execute on function public.increment_link_click(uuid, text, text, text, text) to anon, authenticated, service_role;
+grant execute on function public.record_profile_view(text, text, text, text) to anon, authenticated, service_role;
+grant execute on function public.resolve_public_link(uuid) to anon, authenticated, service_role;
+grant execute on function public.reorder_profile_links(uuid[]) to authenticated, service_role;

@@ -104,9 +104,14 @@ export interface Database {
           profile_id: string;
           title: string;
           url: string;
+          description: string;
           icon: string | null;
+          thumbnail_url: string | null;
           position: number;
           is_active: boolean;
+          is_featured: boolean;
+          scheduled_at: string | null;
+          expires_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -115,18 +120,28 @@ export interface Database {
           profile_id: string;
           title: string;
           url: string;
+          description?: string;
           icon?: string | null;
+          thumbnail_url?: string | null;
           position: number;
           is_active?: boolean;
+          is_featured?: boolean;
+          scheduled_at?: string | null;
+          expires_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           title?: string;
           url?: string;
+          description?: string;
           icon?: string | null;
+          thumbnail_url?: string | null;
           position?: number;
           is_active?: boolean;
+          is_featured?: boolean;
+          scheduled_at?: string | null;
+          expires_at?: string | null;
           updated_at?: string;
         };
       };
@@ -179,6 +194,27 @@ export interface Database {
           user_agent?: string | null;
         };
       };
+      page_views: {
+        Row: {
+          id: string;
+          profile_id: string;
+          visitor_hash: string;
+          viewed_on: string;
+          viewed_at: string;
+          referer: string | null;
+          user_agent: string | null;
+        };
+        Insert: {
+          id?: string;
+          profile_id: string;
+          visitor_hash: string;
+          viewed_on?: string;
+          viewed_at?: string;
+          referer?: string | null;
+          user_agent?: string | null;
+        };
+        Update: never;
+      };
     };
     Views: {
       public_profile_view: {
@@ -216,6 +252,10 @@ export interface Database {
           clicks_today: number;
           clicks_last_7_days: number;
           clicks_last_30_days: number;
+          total_views: number;
+          views_today: number;
+          views_last_7_days: number;
+          views_last_30_days: number;
         };
       };
     };
@@ -237,6 +277,27 @@ export interface Database {
           request_user_agent?: string | null;
           request_country?: string | null;
           request_city?: string | null;
+        };
+        Returns: Json;
+      };
+      resolve_public_link: {
+        Args: {
+          link_id: string;
+        };
+        Returns: string | null;
+      };
+      reorder_profile_links: {
+        Args: {
+          ordered_ids: string[];
+        };
+        Returns: undefined;
+      };
+      record_profile_view: {
+        Args: {
+          profile_username: string;
+          request_visitor_hash: string;
+          request_referer?: string | null;
+          request_user_agent?: string | null;
         };
         Returns: Json;
       };

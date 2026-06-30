@@ -14,12 +14,26 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
     default: "MyBio Premium",
     template: "%s | MyBio Premium",
   },
   description:
-    "Base premium do MyBio com landing page elegante, dashboard sofisticado e estrutura pronta para evoluir com autenticação e mídia.",
+    "Crie uma presença digital elegante, rápida e mensurável com o MyBio.",
+  applicationName: "MyBio",
+  icons: {
+    icon: "/mybio-mark.svg",
+    shortcut: "/mybio-mark.svg",
+    apple: "/mybio-mark.svg",
+  },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: "MyBio",
+    title: "MyBio — sua presença digital, em um só lugar",
+    description: "Crie uma página pública refinada para seus links, conteúdos e comunidade.",
+  },
 };
 
 export default function RootLayout({

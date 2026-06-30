@@ -8,8 +8,10 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { ProfileViewTracker } from "@/components/analytics/profile-view-tracker";
 import { Button } from "@/components/ui/button";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { getPublicProfileByUsername } from "@/lib/queries/mybio";
@@ -19,6 +21,41 @@ const socialIconMap = {
   linkedin: BriefcaseBusiness,
   tiktok: Music2,
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}): Promise<Metadata> {
+  const { username } = await params;
+  const profile = await getPublicProfileByUsername(username);
+
+  if (!profile) {
+    return { title: "Perfil não encontrado", robots: { index: false, follow: false } };
+  }
+
+  const title = profile.title;
+  const description = profile.description.slice(0, 160);
+
+  return {
+    title,
+    description,
+    alternates: { canonical: `/${profile.username}` },
+    openGraph: {
+      type: "profile",
+      title,
+      description,
+      url: `/${profile.username}`,
+      images: profile.avatarUrl ? [{ url: profile.avatarUrl, alt: title }] : undefined,
+    },
+    twitter: {
+      card: profile.avatarUrl ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: profile.avatarUrl ? [profile.avatarUrl] : undefined,
+    },
+  };
+}
 
 export default async function PublicProfilePage({
   params,
@@ -39,6 +76,7 @@ export default async function PublicProfilePage({
 
   return (
     <main className="page-shell min-h-screen px-4 py-6 md:px-6 md:py-8" style={themeStyle}>
+      <ProfileViewTracker username={profile.username} />
       <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col gap-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="font-display text-3xl tracking-[-0.05em] text-stone-950">
@@ -111,24 +149,41 @@ export default async function PublicProfilePage({
           {profile.links.map((link) => (
             <a
               key={link.id}
-              href={`/api/links/${link.id}/click?url=${encodeURIComponent(link.url)}`}
-              className="group rounded-[2rem] border border-white/70 bg-[linear-gradient(135deg,rgba(255,255,255,0.98)_0%,rgba(255,248,238,0.9)_100%)] p-4 sm:p-5 shadow-[0_25px_80px_-40px_rgba(15,23,42,0.26)] transition hover:-translate-y-1"
+              href={`/api/links/${link.id}/click`}
+              className={`group overflow-hidden rounded-[1.6rem] border bg-[var(--brand-surface)] p-4 shadow-[0_22px_70px_-44px_rgba(20,25,26,0.36)] transition hover:-translate-y-1 sm:p-5 ${
+                link.featured
+                  ? "border-[var(--brand-copper)] ring-1 ring-[var(--brand-copper)]/20"
+                  : "border-[var(--brand-line)]"
+              }`}
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
+                <div className="flex min-w-0 items-center gap-4">
+                  {link.thumbnailUrl ? (
+                    <img
+                      src={link.thumbnailUrl}
+                      alt=""
+                      loading="lazy"
+                      className="size-16 shrink-0 rounded-[1.1rem] object-cover sm:size-20"
+                    />
+                  ) : null}
+                  <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-xl font-semibold tracking-[-0.03em] text-stone-950">
                       {link.title}
                     </h2>
-                    {link.position === 0 ? (
-                      <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                    {link.featured ? (
+                      <span className="rounded-full bg-[#f1dfd3] px-3 py-1 text-xs font-semibold text-[#7e3f25]">
                         destaque
                       </span>
                     ) : null}
                   </div>
-                  <p className="mt-2 break-all text-sm leading-7 text-stone-600">{link.hostname}</p>
+                    {link.description ? (
+                      <p className="mt-2 text-sm leading-6 text-stone-600">{link.description}</p>
+                    ) : null}
+                    <p className="mt-1 truncate text-xs text-stone-500">{link.hostname}</p>
+                  </div>
                 </div>
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-stone-950 text-white transition group-hover:bg-amber-500 group-hover:text-stone-950">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-petrol)] text-white transition group-hover:bg-[var(--brand-copper)]">
                   <ArrowUpRight className="size-4" />
                 </span>
               </div>

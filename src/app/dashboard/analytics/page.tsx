@@ -51,13 +51,13 @@ export default async function DashboardAnalyticsPage() {
           </div>
           <div className="mt-6 grid gap-3 md:grid-cols-3">
             <div className="rounded-[1.4rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4 text-sm text-stone-600">
-              {dashboardData.analytics?.total_clicks ?? 0} cliques totais registrados.
+              {dashboardData.analytics?.total_views ?? 0} visualizações únicas registradas.
             </div>
             <div className="rounded-[1.4rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4 text-sm text-stone-600">
-              {dashboardData.analytics?.clicks_today ?? 0} cliques hoje.
+              {dashboardData.analytics?.total_clicks ?? 0} cliques totais.
             </div>
             <div className="rounded-[1.4rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4 text-sm text-stone-600">
-              {dashboardData.analytics?.clicks_last_7_days ?? 0} cliques na última semana.
+              {dashboardData.analytics?.views_last_7_days ?? 0} visualizações na última semana.
             </div>
           </div>
         </SurfaceCard>
