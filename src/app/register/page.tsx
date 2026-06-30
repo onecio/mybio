@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { registerAction } from "@/actions/auth";
 import { AuthShell } from "@/components/auth/auth-shell";
+import { SocialLogin } from "@/components/auth/social-login";
 import { StatusMessage } from "@/components/forms/status-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Field, TextInput } from "@/components/ui/field";
@@ -63,6 +64,8 @@ export default async function RegisterPage({
         </label>
         <SubmitButton label="Criar conta premium" pendingLabel="Criando conta..." size="lg" className="mt-2" />
       </form>
+
+      <SocialLogin />
     </AuthShell>
   );
 }

@@ -3,10 +3,18 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSiteUrl } from "@/lib/supabase/config";
 
+function getSafeNextPath(value: string | null) {
+  if (value?.startsWith("/") && !value.startsWith("//")) {
+    return value;
+  }
+
+  return "/dashboard";
+}
+
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") ?? "/dashboard";
+  const next = getSafeNextPath(requestUrl.searchParams.get("next"));
   const origin = getSiteUrl();
   const redirectUrl = new URL(next, origin);
 

@@ -61,7 +61,22 @@ http://localhost:3000
 - Preencha as variáveis do Supabase e Cloudinary em `.env.local`
 - Os dados atuais estão centralizados em `src/lib/mock-data.ts`
 - Os schemas principais ficam em `src/validators`
-- O middleware de proteção do dashboard está em `src/middleware.ts`
+- O proxy de proteção do dashboard está em `src/proxy.ts`
+
+## Autenticação Supabase
+
+O projeto suporta e-mail/senha e OAuth com Google ou GitHub. Para o ambiente de produção:
+
+1. Execute `supabase/mybio_schema.sql` no SQL Editor do projeto.
+2. Em **Authentication > URL Configuration**, configure:
+   - Site URL: `https://mybio.ecomnix.com.br`
+   - Redirect URL: `https://mybio.ecomnix.com.br/auth/callback`
+3. Em **Authentication > Providers**, habilite Google e/ou GitHub com credenciais OAuth próprias.
+4. No provedor social, use como callback a URL exibida pelo Supabase, no formato:
+   `https://<project-ref>.supabase.co/auth/v1/callback`.
+5. Para cadastro por e-mail, configure SMTP próprio antes de exigir confirmação de e-mail. Em ambientes sem SMTP, desabilite temporariamente a confirmação para não impedir o primeiro acesso.
+
+Nunca armazene Client Secrets, service role keys ou senhas no repositório. As chaves públicas do Supabase podem ficar no `ConfigMap`; segredos administrativos devem ficar no `Secret` do cluster.
 
 ## Scripts
 

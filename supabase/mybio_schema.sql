@@ -122,6 +122,7 @@ set search_path = public
 as $$
 declare
   generated_username text;
+  username_suffix integer := 0;
   default_theme_id uuid;
 begin
   select id into default_theme_id
@@ -145,6 +146,20 @@ begin
   if generated_username is null or length(generated_username) < 3 then
     generated_username := 'user' || substring(new.id::text from 1 for 8);
   end if;
+
+  generated_username := left(generated_username, 30);
+
+  while exists (
+    select 1
+    from public.profile_pages
+    where username = generated_username
+  ) loop
+    username_suffix := username_suffix + 1;
+    generated_username := left(
+      regexp_replace(generated_username, '-[0-9]+$', ''),
+      29 - length(username_suffix::text)
+    ) || '-' || username_suffix::text;
+  end loop;
 
   insert into public.profiles (id, email, name, avatar_url)
   values (
