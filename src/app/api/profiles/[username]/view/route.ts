@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createDailyVisitorHash } from "@/lib/security/visitor";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 
 export async function POST(
   request: Request,
@@ -14,7 +14,7 @@ export async function POST(
   }
 
   const visitorHash = createDailyVisitorHash(request, `profile:${username}`);
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
 
   if (!visitorHash || !supabase) {
     return NextResponse.json({ recorded: false }, { status: 503 });

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getSafeHttpUrl } from "@/lib/security/url";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 
 export async function GET(
   request: Request,
@@ -12,7 +12,7 @@ export async function GET(
   const fallbackUrl = new URL("/", requestUrl.origin);
   const referer = request.headers.get("referer");
   const userAgent = request.headers.get("user-agent");
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
 
   if (!supabase) {
     return NextResponse.redirect(fallbackUrl);
