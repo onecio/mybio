@@ -11,6 +11,6 @@ data:
   NEXT_PUBLIC_SITE_URL: "https://mybio.ecomnix.com.br"
   NEXT_PUBLIC_SUPABASE_URL: "https://iomiruxvgxdnbuxiqlac.supabase.co"
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_SJoOgqkR1nI0hONI4kR2SQ_bgYYMQRw"
-  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ""
-  NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ""
+  NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: "dvh1ctdm1"
+  NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: "mybio_avatar_unsigned"
   CLOUDINARY_UPLOAD_FOLDER: "mybio-premium"
