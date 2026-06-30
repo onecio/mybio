@@ -29,7 +29,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     "Meu MyBio";
 
   return (
-    <div className="page-shell min-h-screen px-3 py-3 sm:px-4 sm:py-4 md:px-6 md:py-6">
+    <div className="page-shell min-h-screen px-3 py-3 pb-24 sm:px-4 sm:py-4 sm:pb-24 md:px-6 md:py-6 md:pb-24 lg:pb-6">
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-1.5rem)] w-full max-w-7xl gap-4 sm:gap-6 lg:min-h-[calc(100vh-3rem)] lg:grid-cols-[minmax(280px,300px)_minmax(0,1fr)]">
         <DashboardSidebar
           name={name}

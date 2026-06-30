@@ -1,15 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffaf2;
-  --foreground: #1c1917;
-  --muted: #6b645c;
-  --amber-500: #f59e0b;
-  --amber-100: #fef3c7;
-  --sky-200: #bae6fd;
-  --violet-200: #ddd6fe;
-  --green-200: #bbf7d0;
-  --border-soft: rgba(255, 255, 255, 0.72);
+  --background: #f1efe9;
+  --foreground: #171b1c;
+  --muted: #646c6b;
+  --brand-ink: #171b1c;
+  --brand-ivory: #f7f4ec;
+  --brand-surface: #fcfbf7;
+  --brand-petrol: #155e5b;
+  --brand-petrol-deep: #0b4341;
+  --brand-copper: #ad623b;
+  --brand-sage: #92a79a;
+  --brand-sage-soft: #e4e9e3;
+  --brand-line: #d8d8d0;
+  --amber-500: var(--brand-copper);
+  --amber-100: #f1dfd3;
+  --border-soft: rgba(216, 216, 208, 0.86);
 }
 
 @theme inline {
@@ -30,9 +36,9 @@ html {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(245, 158, 11, 0.12), transparent 24%),
-    radial-gradient(circle at top right, rgba(56, 189, 248, 0.09), transparent 21%),
-    linear-gradient(180deg, #fffdf9 0%, #fff8ef 100%);
+    radial-gradient(circle at 12% 0%, rgba(146, 167, 154, 0.2), transparent 28%),
+    radial-gradient(circle at 96% 8%, rgba(173, 98, 59, 0.1), transparent 24%),
+    linear-gradient(180deg, #f8f6f0 0%, #efede7 100%);
   color: var(--foreground);
   font-family: var(--font-manrope), sans-serif;
   overflow-x: hidden;
@@ -44,16 +50,13 @@ body::before {
   pointer-events: none;
   position: fixed;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.42) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.42) 1px, transparent 1px);
-  background-size: 72px 72px;
+  background-image: linear-gradient(rgba(21, 94, 91, 0.045) 1px, transparent 1px);
+  background-size: 100% 24px;
   mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
   opacity: 0.18;
 }
 
 a {
-  color: inherit;
   text-decoration: none;
 }
 
@@ -72,7 +75,7 @@ canvas {
 }
 
 ::selection {
-  background: rgba(245, 158, 11, 0.2);
+  background: rgba(21, 94, 91, 0.2);
 }
 
 .font-display {
@@ -89,8 +92,7 @@ canvas {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.12), transparent 28%),
-    radial-gradient(circle at 80% 12%, rgba(56, 189, 248, 0.12), transparent 24%),
-    radial-gradient(circle at 82% 78%, rgba(196, 181, 253, 0.12), transparent 24%);
+    radial-gradient(circle at 16% 12%, rgba(146, 167, 154, 0.16), transparent 30%),
+    radial-gradient(circle at 86% 18%, rgba(173, 98, 59, 0.1), transparent 26%);
   z-index: 0;
 }

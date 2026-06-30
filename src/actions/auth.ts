@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSiteUrl } from "@/lib/supabase/config";
+import { getSafeInternalPath } from "@/lib/security/url";
 import {
   forgotPasswordSchema,
   loginSchema,
@@ -47,14 +48,6 @@ function getBoolean(formData: FormData, key: string) {
   return formData.get(key) === "on";
 }
 
-function getSafeNextPath(value: string) {
-  if (value.startsWith("/") && !value.startsWith("//")) {
-    return value;
-  }
-
-  return "/dashboard";
-}
-
 function buildRedirect(pathname: string, params: Record<string, string | undefined>): never {
   const searchParams = new URLSearchParams();
 
@@ -70,7 +63,7 @@ function buildRedirect(pathname: string, params: Record<string, string | undefin
 }
 
 export async function loginAction(formData: FormData) {
-  const nextPath = getSafeNextPath(getString(formData, "next"));
+  const nextPath = getSafeInternalPath(getString(formData, "next"));
   const parsed = loginSchema.safeParse({
     email: getString(formData, "email"),
     password: getString(formData, "password"),
@@ -154,7 +147,7 @@ export async function registerAction(formData: FormData) {
 
 export async function socialLoginAction(formData: FormData) {
   const provider = getString(formData, "provider");
-  const nextPath = getSafeNextPath(getString(formData, "next"));
+  const nextPath = getSafeInternalPath(getString(formData, "next"));
 
   if (!socialProviders.includes(provider as (typeof socialProviders)[number])) {
     buildRedirect("/login", {

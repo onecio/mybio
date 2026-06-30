@@ -7,7 +7,6 @@ import type {
   NavItem,
   ProcessStep,
   ShowcasePage,
-  Testimonial,
   ThemePreset,
   UserProfile,
 } from "@/types";
@@ -17,14 +16,13 @@ export const marketingNav: NavItem[] = [
   { label: "Como funciona", href: "#como-funciona" },
   { label: "Showcase", href: "#showcase" },
   { label: "Recursos", href: "#recursos" },
-  { label: "Depoimentos", href: "#depoimentos" },
 ];
 
 export const socialProof = [
-  "Mais de 32 mil perfis lançados",
-  "Conversão até 2,6x maior",
-  "Deploy em minutos",
-  "Design premium pronto para marca pessoal",
+  "Plano gratuito para a comunidade",
+  "Dados protegidos por usuário",
+  "Experiência criada para smartphones",
+  "Identidade visual sem marcas genéricas",
 ];
 
 export const benefits: BenefitItem[] = [
@@ -126,30 +124,6 @@ export const featureItems: FeatureItem[] = [
     title: "Visual de alta percepção",
     description:
       "Detalhes de UI, espaçamento consistente e linguagem visual premium em toda a aplicação.",
-  },
-];
-
-export const testimonials: Testimonial[] = [
-  {
-    name: "Marina Lobo",
-    role: "Educadora Digital",
-    quote:
-      "O MyBio me deu uma página com aparência de produto premium. Passei a vender melhor e parecer mais sólida desde o primeiro acesso.",
-    avatar: "ML",
-  },
-  {
-    name: "Caio Mendes",
-    role: "Creator de negócios",
-    quote:
-      "É o tipo de experiência que já comunica valor antes mesmo do clique. Ficou muito acima do padrão das bio pages comuns.",
-    avatar: "CM",
-  },
-  {
-    name: "Bianca Azevedo",
-    role: "Fundadora de estúdio",
-    quote:
-      "A combinação entre visual sofisticado e painel organizado deixou o fluxo diário mais fácil e muito mais bonito.",
-    avatar: "BA",
   },
 ];
 

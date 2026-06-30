@@ -24,6 +24,17 @@ function getBoolean(formData: FormData, key: string) {
   return formData.get(key) === "on";
 }
 
+function getOptionalIsoDate(formData: FormData, key: string) {
+  const value = getString(formData, key);
+
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
 function buildRedirect(pathname: string, params: Record<string, string | undefined>): never {
   const searchParams = new URLSearchParams();
 
@@ -146,8 +157,11 @@ export async function createLinkAction(formData: FormData) {
     url: getString(formData, "url"),
     description: getString(formData, "description"),
     icon: getString(formData, "icon") || "link",
-    featured: false,
+    featured: getBoolean(formData, "featured"),
     active: true,
+    thumbnailUrl: getString(formData, "thumbnailUrl"),
+    scheduledAt: getString(formData, "scheduledAt"),
+    expiresAt: getString(formData, "expiresAt"),
   });
 
   if (!parsed.success) {
@@ -173,9 +187,14 @@ export async function createLinkAction(formData: FormData) {
       profile_id: profilePage.id,
       title: parsed.data.title,
       url: parsed.data.url,
+      description: parsed.data.description,
       icon: parsed.data.icon || "link",
+      thumbnail_url: parsed.data.thumbnailUrl || null,
       position: (typedLastLink?.position ?? -1) + 1,
       is_active: true,
+      is_featured: parsed.data.featured,
+      scheduled_at: getOptionalIsoDate(formData, "scheduledAt"),
+      expires_at: getOptionalIsoDate(formData, "expiresAt"),
     } as never,
   );
 
@@ -185,6 +204,70 @@ export async function createLinkAction(formData: FormData) {
 
   revalidateDashboardRoutes(profilePage.username);
   buildRedirect("/dashboard/links", { success: "Novo link criado." });
+}
+
+export async function updateLinkAction(formData: FormData) {
+  const linkId = getString(formData, "linkId");
+  const parsed = linkSchema.safeParse({
+    title: getString(formData, "title"),
+    url: getString(formData, "url"),
+    description: getString(formData, "description"),
+    icon: getString(formData, "icon") || "link",
+    featured: getBoolean(formData, "featured"),
+    active: getBoolean(formData, "active"),
+    thumbnailUrl: getString(formData, "thumbnailUrl"),
+    scheduledAt: getString(formData, "scheduledAt"),
+    expiresAt: getString(formData, "expiresAt"),
+  });
+
+  if (!linkId || !parsed.success) {
+    buildRedirect("/dashboard/links", {
+      error: parsed.success
+        ? "Link inválido."
+        : parsed.error.issues[0]?.message ?? "Não foi possível validar o link.",
+    });
+  }
+
+  const { supabase, profilePage } = await getAuthenticatedResources();
+  const { error } = await supabase
+    .from("profile_links")
+    .update({
+      title: parsed.data.title,
+      url: parsed.data.url,
+      description: parsed.data.description,
+      icon: parsed.data.icon || "link",
+      thumbnail_url: parsed.data.thumbnailUrl || null,
+      is_active: parsed.data.active,
+      is_featured: parsed.data.featured,
+      scheduled_at: getOptionalIsoDate(formData, "scheduledAt"),
+      expires_at: getOptionalIsoDate(formData, "expiresAt"),
+    } as never)
+    .eq("id", linkId);
+
+  if (error) {
+    buildRedirect("/dashboard/links", { error: error.message });
+  }
+
+  revalidateDashboardRoutes(profilePage.username);
+  buildRedirect("/dashboard/links", { success: "Link atualizado." });
+}
+
+export async function reorderLinksAction(orderedIds: string[]) {
+  if (!Array.isArray(orderedIds) || orderedIds.length === 0 || orderedIds.length > 200) {
+    return { ok: false, error: "Ordem de links inválida." };
+  }
+
+  const { supabase, profilePage } = await getAuthenticatedResources();
+  const { error } = await supabase.rpc("reorder_profile_links", {
+    ordered_ids: orderedIds,
+  } as never);
+
+  if (error) {
+    return { ok: false, error: "Não foi possível salvar a nova ordem." };
+  }
+
+  revalidateDashboardRoutes(profilePage.username);
+  return { ok: true };
 }
 
 export async function toggleLinkAction(formData: FormData) {

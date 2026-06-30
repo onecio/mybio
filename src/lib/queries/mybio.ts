@@ -60,8 +60,11 @@ export interface PublicProfileLink {
   id: string;
   title: string;
   url: string;
+  description: string;
   icon: string | null;
+  thumbnailUrl: string | null;
   position: number;
+  featured: boolean;
   hostname: string;
 }
 
@@ -227,8 +230,11 @@ function parsePublicProfilePayload(payload: Json | null | undefined): PublicProf
       id: String(item.id ?? crypto.randomUUID()),
       title: String(item.title ?? "Link"),
       url: String(item.url ?? "#"),
+      description: typeof item.description === "string" ? item.description : "",
       icon: typeof item.icon === "string" ? item.icon : null,
+      thumbnailUrl: typeof item.thumbnail_url === "string" ? item.thumbnail_url : null,
       position: Number(item.position ?? 0),
+      featured: Boolean(item.is_featured),
       hostname: getHostname(String(item.url ?? "#")),
     }))
     .sort((first, second) => first.position - second.position);
@@ -363,7 +369,7 @@ export const getDashboardData = cache(async (): Promise<DashboardData | null> =>
   };
 });
 
-export async function getPublicProfileByUsername(username: string) {
+export const getPublicProfileByUsername = cache(async (username: string) => {
   const supabase = await createSupabaseServerClient();
 
   if (!supabase) {
@@ -373,7 +379,7 @@ export async function getPublicProfileByUsername(username: string) {
   const { data } = await supabase.rpc("get_profile_by_username", { username } as never);
 
   return parsePublicProfilePayload(data);
-}
+});
 
 export function toPreviewProfile(data: DashboardData): UserProfile {
   const profileName =
@@ -397,7 +403,7 @@ export function toPreviewProfile(data: DashboardData): UserProfile {
       ? "Upload direto via Cloudinary ativo"
       : "Avatar por URL manual",
     verified: Boolean(data.profile?.is_published),
-    monthlyViews: data.analytics?.clicks_last_30_days?.toLocaleString("pt-BR") ?? "0",
+    monthlyViews: data.analytics?.views_last_30_days?.toLocaleString("pt-BR") ?? "0",
     conversionRate: `${data.links.length} links`,
     links: data.links.map<LinkItem>((link) => ({
       id: link.id,
@@ -417,9 +423,9 @@ export function toPreviewProfile(data: DashboardData): UserProfile {
     })),
     stats: [
       {
-        label: "Cliques 30 dias",
-        value: String(data.analytics?.clicks_last_30_days ?? 0),
-        detail: "Tráfego recente",
+        label: "Visitas 30 dias",
+        value: String(data.analytics?.views_last_30_days ?? 0),
+        detail: "Audiência recente",
       },
       {
         label: "Links ativos",

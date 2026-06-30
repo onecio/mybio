@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">MyBio</title>
+  <rect width="64" height="64" rx="18" fill="#155e5b"/>
+  <path d="M32 11c12.7 0 23 10.3 23 23S44.7 57 32 57 9 46.7 9 34 19.3 11 32 11Z" fill="none" stroke="#f7f4ec" stroke-width="3.6"/>
+  <path d="M20.4 36.8c7.5-12.8 18.5-16.9 26.3-11.4-2.6 12-11.2 20.1-24.3 21.3 1.6-5.9 5.9-10.5 13-14" fill="none" stroke="#f7f4ec" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.6"/>
+</svg>
