@@ -1,4 +1,4 @@
-import { ExternalLink, Palette, Users } from "lucide-react";
+import { ExternalLink, Palette, Share2, Users } from "lucide-react";
 
 import { saveProfileAction } from "@/actions/dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
@@ -26,9 +26,20 @@ export default async function DashboardProfilePage({
   return (
     <div className="grid gap-5">
       <DashboardHeader
-        title="Perfil e redes"
-        description="Edite nome, bio, avatar e canais."
-        action={data.publicUrl ? <Button href={data.publicUrl} variant="secondary" className="gap-2"><ExternalLink className="size-4" /> Ver página</Button> : undefined}
+        title="Perfil"
+        description="Ajuste identidade, username e publicação. Redes sociais ficam como complemento, não como fluxo principal."
+        action={
+          <>
+            <Button href="/dashboard/share" variant="secondary" className="gap-2">
+              <Share2 className="size-4" /> Compartilhar
+            </Button>
+            {data.publicUrl ? (
+              <Button href={data.publicUrl} variant="secondary" className="gap-2">
+                <ExternalLink className="size-4" /> Ver página
+              </Button>
+            ) : null}
+          </>
+        }
       />
       <StatusMessage error={params.error} success={params.success} />
 
@@ -61,6 +72,15 @@ export default async function DashboardProfilePage({
         </form>
 
         <aside className="grid gap-3">
+          <div className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+            <p className="text-sm text-stone-500">Redes conectadas</p>
+            <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
+              {data.socials.length}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-stone-500">
+              Use apenas os canais que realmente ajudam o visitante a agir.
+            </p>
+          </div>
           <Button href="/dashboard/socials" variant="secondary" className="h-14 justify-start gap-3 rounded-xl bg-white px-4">
             <Users className="size-5" /> Gerenciar redes sociais
           </Button>

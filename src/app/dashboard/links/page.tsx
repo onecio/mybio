@@ -25,7 +25,7 @@ export default async function DashboardLinksPage({
     <div className="grid gap-5">
       <DashboardHeader
         title="Links"
-        description="Adicione, edite e reordene os links da sua página."
+        description="Este é o fluxo principal do produto. Organize a ordem, destaque o que converte e publique sem excesso de configuração."
         action={
           <>
             <Button href="/dashboard/share" variant="secondary" className="gap-2">
@@ -41,6 +41,27 @@ export default async function DashboardLinksPage({
       />
 
       <StatusMessage error={params.error} success={params.success} />
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+          <p className="text-sm text-stone-500">Links totais</p>
+          <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
+            {data.links.length}
+          </p>
+        </div>
+        <div className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+          <p className="text-sm text-stone-500">Ativos</p>
+          <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
+            {data.links.filter((link) => link.is_active).length}
+          </p>
+        </div>
+        <div className="rounded-[1.5rem] border border-stone-200 bg-white p-4 shadow-sm">
+          <p className="text-sm text-stone-500">Em destaque</p>
+          <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
+            {data.links.filter((link) => link.is_featured).length}
+          </p>
+        </div>
+      </div>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
         <section className="min-w-0">

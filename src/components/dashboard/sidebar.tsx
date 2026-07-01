@@ -28,7 +28,9 @@ const iconMap = {
   settings: Settings,
 } as const;
 
-const mobileNav = dashboardNav.filter((item) => item.section !== "settings").slice(0, 5);
+const mobileNav = dashboardNav.filter((item) =>
+  ["dashboard", "links", "themes", "profile", "analytics"].includes(item.section ?? ""),
+);
 
 interface DashboardSidebarProps {
   name: string;
@@ -66,11 +68,17 @@ export function DashboardSidebar({
       <aside className="hidden h-screen flex-col border-r border-stone-200 bg-white px-4 py-5 lg:sticky lg:top-0 lg:flex">
         <BrandMark href="/" />
 
-        <nav className="mt-8 grid gap-1" aria-label="Painel principal">
+        <div className="mt-8">
+          <p className="px-3 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-stone-400">
+            edição da página
+          </p>
+        </div>
+
+        <nav className="mt-3 grid gap-1" aria-label="Painel principal">
           {dashboardNav.map((item) => {
             const section = item.section ?? "dashboard";
             const Icon = iconMap[section];
-            const active = pathname === item.href || (item.href === "/dashboard/links" && pathname === "/dashboard");
+            const active = pathname === item.href;
 
             return (
               <Link
@@ -90,6 +98,14 @@ export function DashboardSidebar({
         </nav>
 
         <div className="mt-auto border-t border-stone-200 pt-4">
+          {publicUrl ? (
+            <Link
+              href="/dashboard/share"
+              className="mb-3 flex h-11 items-center justify-center gap-2 rounded-xl bg-stone-900 text-sm font-semibold text-white transition hover:bg-stone-800"
+            >
+              <ExternalLink className="size-4" /> Compartilhar perfil
+            </Link>
+          ) : null}
           {publicUrl ? (
             <Link href={publicUrl} className="mb-3 flex h-11 items-center justify-center gap-2 rounded-xl border border-stone-200 text-sm font-semibold text-stone-700 transition hover:bg-stone-50">
               <ExternalLink className="size-4" /> Ver página

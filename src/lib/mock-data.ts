@@ -128,11 +128,11 @@ export const featureItems: FeatureItem[] = [
 ];
 
 export const dashboardNav: NavItem[] = [
+  { label: "Visão geral", href: "/dashboard", section: "dashboard" },
   { label: "Links", href: "/dashboard/links", section: "links" },
   { label: "Visual", href: "/dashboard/design", section: "themes" },
   { label: "Perfil", href: "/dashboard/profile", section: "profile" },
   { label: "Métricas", href: "/dashboard/insights", section: "analytics" },
-  { label: "Compartilhar", href: "/dashboard/share", section: "share" },
   { label: "Configurações", href: "/dashboard/settings", section: "settings" },
 ];
 
