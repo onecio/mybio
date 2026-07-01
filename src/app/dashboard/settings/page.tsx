@@ -4,7 +4,6 @@ import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { StatusMessage } from "@/components/forms/status-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Button } from "@/components/ui/button";
-import { Field, TextInput } from "@/components/ui/field";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { getDashboardData } from "@/lib/queries/mybio";
 
@@ -24,7 +23,7 @@ export default async function DashboardSettingsPage({
     <div className="grid gap-6">
       <DashboardHeader
         title="Configurações"
-        description="Controle a publicação da página e sua sessão."
+        description="Use esta área apenas para controlar publicação e sessão. O restante da edição acontece no fluxo principal."
       />
 
       <StatusMessage error={params.error} success={params.success} />
@@ -32,12 +31,12 @@ export default async function DashboardSettingsPage({
       <div className="grid max-w-4xl gap-5 lg:grid-cols-[1fr_0.72fr]">
         <SurfaceCard className="rounded-2xl p-5 sm:p-6">
           <form action={saveSettingsAction} className="grid gap-5">
-            <Field label="E-mail da conta">
-              <TextInput defaultValue={dashboardData.user.email ?? ""} disabled />
-            </Field>
-            <Field label="URL pública">
-              <TextInput defaultValue={dashboardData.publicUrl ?? "Aguardando username"} disabled />
-            </Field>
+            <div className="rounded-[1.4rem] border border-stone-200 bg-stone-50 px-4 py-4">
+              <p className="text-sm text-stone-500">URL pública</p>
+              <p className="mt-2 break-all text-sm font-medium text-stone-900">
+                {dashboardData.publicUrl ?? "Aguardando definição de username"}
+              </p>
+            </div>
             <label className="flex items-start gap-3 rounded-[1.4rem] border border-stone-200/70 bg-stone-50/70 px-4 py-3 text-sm leading-6 text-stone-600">
               <input
                 type="checkbox"
@@ -47,7 +46,7 @@ export default async function DashboardSettingsPage({
               />
               Página pública visível para visitantes.
             </label>
-            <SubmitButton label="Salvar" pendingLabel="Salvando..." />
+            <SubmitButton label="Salvar publicação" pendingLabel="Salvando..." />
           </form>
         </SurfaceCard>
 

@@ -1,4 +1,4 @@
-import { ArrowUpRight, Eye, Lightbulb, MousePointerClick, Percent } from "lucide-react";
+import { ArrowUpRight, Eye, Lightbulb, MousePointerClick } from "lucide-react";
 
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { EmptyState } from "@/components/dashboard/empty-state";
@@ -6,6 +6,10 @@ import { MiniBarChart } from "@/components/dashboard/mini-bar-chart";
 import { Button } from "@/components/ui/button";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { getDashboardData } from "@/lib/queries/mybio";
+
+function formatNumber(value: number) {
+  return value.toLocaleString("pt-BR");
+}
 
 export default async function DashboardAnalyticsPage() {
   const dashboardData = await getDashboardData();
@@ -17,48 +21,68 @@ export default async function DashboardAnalyticsPage() {
   const totalViews = dashboardData.analytics?.total_views ?? 0;
   const totalClicks = dashboardData.analytics?.total_clicks ?? 0;
   const clickRate = totalViews > 0 ? (totalClicks / totalViews) * 100 : 0;
-  const summary = [
-    { label: "Visualizações", value: totalViews.toLocaleString("pt-BR"), detail: "visitantes únicos por dia", icon: Eye },
-    { label: "Cliques", value: totalClicks.toLocaleString("pt-BR"), detail: "interações acumuladas", icon: MousePointerClick },
-    { label: "Taxa de clique", value: `${clickRate.toFixed(1).replace(".", ",")}%`, detail: "cliques por visualização", icon: Percent },
-    { label: "Links ativos", value: String(dashboardData.links.filter((link) => link.is_active).length), detail: "destinos publicados", icon: ArrowUpRight },
-  ];
+  const topLink = dashboardData.topLinks[0];
 
   return (
     <div className="grid gap-6">
       <DashboardHeader
         title="Métricas"
-        description="Veja visitas, cliques e os links com melhor resultado."
+        description="Acompanhe apenas o que ajuda a decidir a próxima ação: audiência, cliques e qual link merece prioridade."
         action={
-          dashboardData.publicUrl ? (
-            <Button href={dashboardData.publicUrl} variant="secondary" className="gap-2">
-              Abrir página pública <ArrowUpRight className="size-4" />
-            </Button>
-          ) : undefined
+          <Button href="/dashboard/links" variant="secondary" className="gap-2">
+            Otimizar links <ArrowUpRight className="size-4" />
+          </Button>
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {summary.map((item) => {
-          const Icon = item.icon;
-          return (
-            <SurfaceCard key={item.label} className="rounded-[1.7rem] p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400">{item.label}</p>
-                  <p className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-stone-950">{item.value}</p>
-                  <p className="mt-1 text-sm text-stone-500">{item.detail}</p>
-                </div>
-                <span className="grid size-10 place-items-center rounded-xl bg-[var(--brand-sage-soft)] text-[var(--brand-petrol)]">
-                  <Icon className="size-4" />
-                </span>
-              </div>
-            </SurfaceCard>
-          );
-        })}
-      </div>
+      <section className="grid gap-4 md:grid-cols-3">
+        <SurfaceCard className="rounded-[1.8rem] p-5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-stone-500">Visualizações</p>
+              <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
+                {formatNumber(totalViews)}
+              </p>
+            </div>
+            <span className="grid size-10 place-items-center rounded-xl bg-[var(--brand-sage-soft)] text-[var(--brand-petrol)]">
+              <Eye className="size-4" />
+            </span>
+          </div>
+          <p className="mt-4 text-sm text-stone-500">pessoas que chegaram até sua página</p>
+        </SurfaceCard>
 
-      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <SurfaceCard className="rounded-[1.8rem] p-5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-stone-500">Cliques</p>
+              <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
+                {formatNumber(totalClicks)}
+              </p>
+            </div>
+            <span className="grid size-10 place-items-center rounded-xl bg-[var(--brand-sage-soft)] text-[var(--brand-petrol)]">
+              <MousePointerClick className="size-4" />
+            </span>
+          </div>
+          <p className="mt-4 text-sm text-stone-500">interações geradas pelos seus links</p>
+        </SurfaceCard>
+
+        <SurfaceCard className="rounded-[1.8rem] p-5">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm text-stone-500">Taxa de clique</p>
+              <p className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
+                {clickRate.toFixed(1).replace(".", ",")}%
+              </p>
+            </div>
+            <span className="grid size-10 place-items-center rounded-xl bg-[var(--brand-sage-soft)] text-[var(--brand-petrol)]">
+              <ArrowUpRight className="size-4" />
+            </span>
+          </div>
+          <p className="mt-4 text-sm text-stone-500">quantos visitantes avançam para um destino</p>
+        </SurfaceCard>
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <SurfaceCard className="rounded-[2.2rem] p-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
@@ -66,12 +90,12 @@ export default async function DashboardAnalyticsPage() {
                 últimos 14 dias
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
-                Cliques por dia
+                Ritmo de cliques
               </h2>
             </div>
-            <div className="rounded-full border border-stone-200/70 bg-stone-50 px-4 py-2 text-sm text-stone-600">
-              14 dias monitorados
-            </div>
+            <span className="rounded-full border border-stone-200 bg-stone-50 px-4 py-2 text-sm text-stone-600">
+              foco em tendência, não em excesso de detalhe
+            </span>
           </div>
           <div className="mt-6">
             <MiniBarChart
@@ -79,78 +103,52 @@ export default async function DashboardAnalyticsPage() {
               labels={dashboardData.dailyClicks.map((item) => item.label)}
             />
           </div>
-          <div className="mt-6 grid gap-3 md:grid-cols-3">
-            <div className="rounded-[1.4rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4 text-sm text-stone-600">
-              {dashboardData.analytics?.total_views ?? 0} visualizações únicas registradas.
-            </div>
-            <div className="rounded-[1.4rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4 text-sm text-stone-600">
-              {dashboardData.analytics?.total_clicks ?? 0} cliques totais.
-            </div>
-            <div className="rounded-[1.4rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4 text-sm text-stone-600">
-              {dashboardData.analytics?.views_last_7_days ?? 0} visualizações na última semana.
-            </div>
-          </div>
         </SurfaceCard>
 
         <SurfaceCard className="rounded-[2.2rem] p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
-            top links
+            leitura rápida
           </p>
-          <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
-            Links com mais cliques
-          </h2>
-          <div className="mt-6 grid gap-4">
-            {dashboardData.topLinks.length > 0 ? (
-              dashboardData.topLinks.map((link, index) => (
-                <div
-                  key={link.id}
-                  className="rounded-[1.6rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.18em] text-stone-400">
-                        #{index + 1}
-                      </p>
-                      <p className="mt-1 font-semibold text-stone-950">{link.title}</p>
-                      <p className="text-sm text-stone-500">{link.hostname}</p>
-                    </div>
-                    <p className="text-2xl font-semibold tracking-[-0.03em] text-stone-950">
-                      {link.clicks.toLocaleString("pt-BR")}
+          {topLink ? (
+            <div className="mt-3 grid gap-4">
+              <div className="rounded-[1.6rem] border border-stone-200 bg-stone-50 p-5">
+                <p className="text-sm text-stone-500">Link líder</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
+                  {topLink.title}
+                </h2>
+                <p className="mt-2 text-sm text-stone-500">{topLink.hostname}</p>
+                <p className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
+                  {formatNumber(topLink.clicks)}
+                </p>
+              </div>
+              <div className="rounded-[1.6rem] border border-stone-200 bg-stone-50 p-5">
+                <div className="flex items-start gap-3">
+                  <span className="grid size-10 place-items-center rounded-xl bg-[#f1dfd3] text-[var(--brand-copper)]">
+                    <Lightbulb className="size-4" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-stone-950">Próxima melhor ação</p>
+                    <p className="mt-2 text-sm leading-6 text-stone-500">
+                      {totalViews === 0
+                        ? "Compartilhe sua página antes de ajustar detalhes visuais."
+                        : totalClicks === 0
+                          ? "Reescreva o título do primeiro link para deixá-lo mais direto."
+                          : "Mantenha o melhor link no topo e teste um segundo CTA complementar."}
                     </p>
                   </div>
                 </div>
-              ))
-            ) : (
-              <EmptyState
-                eyebrow="sem dados ainda"
-                title="As métricas aparecem quando sua página começar a receber visitas."
-                description="Publique pelo menos um link para começar a registrar cliques."
-              />
-            )}
-          </div>
+              </div>
+            </div>
+          ) : (
+            <EmptyState
+              eyebrow="sem dados ainda"
+              title="As métricas aparecerão quando a página começar a circular."
+              description="Publique e compartilhe a página para começar a registrar visitas e cliques."
+              action={<Button href="/dashboard/share" variant="secondary">Abrir compartilhamento</Button>}
+            />
+          )}
         </SurfaceCard>
-      </div>
-
-      <SurfaceCard className="rounded-[2rem] p-6">
-        <div className="grid gap-5 lg:grid-cols-[auto_1fr_auto] lg:items-center">
-          <span className="grid size-12 place-items-center rounded-[1rem] bg-[#f1dfd3] text-[var(--brand-copper)]">
-            <Lightbulb className="size-5" />
-          </span>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">próxima melhor ação</p>
-            <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-stone-950">
-              {totalViews === 0
-                ? "Compartilhe sua página para começar a gerar audiência."
-                : totalClicks === 0
-                  ? "Ajuste o primeiro link com um título mais direto."
-                  : "Mantenha o link com melhor resultado no topo."}
-            </h2>
-          </div>
-          <Button href={totalViews === 0 ? "/dashboard/share" : "/dashboard/links"} variant="secondary">
-            {totalViews === 0 ? "Abrir compartilhamento" : "Otimizar links"}
-          </Button>
-        </div>
-      </SurfaceCard>
+      </section>
     </div>
   );
 }
