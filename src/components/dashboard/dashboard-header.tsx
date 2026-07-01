@@ -1,20 +1,14 @@
 import type { ReactNode } from "react";
 
-import { Bell, Search } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-
 interface DashboardHeaderProps {
   title: string;
   description: string;
-  actionLabel?: string;
   action?: ReactNode;
 }
 
 export function DashboardHeader({
   title,
   description,
-  actionLabel = "Salvar alterações",
   action,
 }: DashboardHeaderProps) {
   return (
@@ -29,20 +23,11 @@ export function DashboardHeader({
         <p className="mt-2 max-w-2xl text-sm leading-7 text-stone-600">{description}</p>
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
-        <div className="flex w-full items-center gap-2 rounded-full border border-stone-200/70 bg-stone-50/90 px-4 py-3 text-sm text-stone-500 sm:w-auto">
-          <Search className="size-4" />
-          <span className="truncate">Buscar atalho ou página</span>
+      {action ? (
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+          {action}
         </div>
-        <button
-          type="button"
-          aria-label="Notificações"
-          className="flex size-12 items-center justify-center rounded-full border border-stone-200/70 bg-white text-stone-700"
-        >
-          <Bell className="size-4" />
-        </button>
-        {action ?? <Button>{actionLabel}</Button>}
-      </div>
+      ) : null}
     </div>
   );
 }

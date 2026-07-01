@@ -86,6 +86,7 @@ function revalidateDashboardRoutes(username?: string) {
   revalidatePath("/dashboard/socials");
   revalidatePath("/dashboard/themes");
   revalidatePath("/dashboard/analytics");
+  revalidatePath("/dashboard/insights");
   revalidatePath("/dashboard/settings");
 
   if (username) {

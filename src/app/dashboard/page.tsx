@@ -83,8 +83,8 @@ export default async function DashboardPage({
                 Cliques reais dos últimos 14 dias
               </h2>
             </div>
-            <Button href="/dashboard/analytics" variant="secondary" className="w-full gap-2 sm:w-auto">
-              Abrir analytics <ArrowUpRight className="size-4" />
+            <Button href="/dashboard/insights" variant="secondary" className="w-full gap-2 sm:w-auto">
+              Abrir insights <ArrowUpRight className="size-4" />
             </Button>
           </div>
           <div className="mt-6">

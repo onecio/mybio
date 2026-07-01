@@ -12,7 +12,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ProfileViewTracker } from "@/components/analytics/profile-view-tracker";
+import { PublicShareButton } from "@/components/public-profile/share-button";
 import { Button } from "@/components/ui/button";
+import { ResilientImage } from "@/components/ui/resilient-image";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { getPublicProfileByUsername } from "@/lib/queries/mybio";
 
@@ -77,17 +79,20 @@ export default async function PublicProfilePage({
   return (
     <main className="page-shell min-h-screen px-4 py-6 md:px-6 md:py-8" style={themeStyle}>
       <ProfileViewTracker username={profile.username} />
-      <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col gap-6">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative z-10 mx-auto flex w-full max-w-2xl flex-col gap-5">
+        <div className="flex items-center justify-between gap-3">
           <Link href="/" className="font-display text-3xl tracking-[-0.05em] text-stone-950">
             MyBio
           </Link>
-          <Button href="/register" variant="secondary" className="w-full sm:w-auto">
-            Criar meu MyBio
-          </Button>
+          <div className="flex items-center gap-2">
+            <PublicShareButton title={profile.title} />
+            <Button href="/register" variant="secondary" className="hidden sm:inline-flex">
+              Criar meu MyBio
+            </Button>
+          </div>
         </div>
 
-        <SurfaceCard className="rounded-[2.6rem] p-5 sm:p-6 md:p-8">
+        <SurfaceCard className="rounded-[2.4rem] p-6 sm:p-8">
           <div className="flex flex-col items-center text-center">
             {profile.avatarUrl ? (
               <img
@@ -107,7 +112,7 @@ export default async function PublicProfilePage({
               <BadgeCheck className="size-5 text-emerald-500" />
             </div>
             <p className="mt-2 break-all text-base text-stone-500 sm:text-lg">@{profile.username}</p>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-stone-600 md:text-lg">
+            <p className="mt-5 max-w-xl text-base leading-8 text-stone-600 md:text-lg">
               {profile.description}
             </p>
 
@@ -129,20 +134,6 @@ export default async function PublicProfilePage({
             </div>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {profile.stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-[1.6rem] border border-stone-200/70 bg-stone-50/80 px-4 py-4 text-center"
-              >
-                <p className="text-xs uppercase tracking-[0.18em] text-stone-400">{stat.label}</p>
-                <p className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-xs text-stone-500">{stat.detail}</p>
-              </div>
-            ))}
-          </div>
         </SurfaceCard>
 
         <div className="grid gap-4">
@@ -159,10 +150,9 @@ export default async function PublicProfilePage({
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex min-w-0 items-center gap-4">
                   {link.thumbnailUrl ? (
-                    <img
+                    <ResilientImage
                       src={link.thumbnailUrl}
                       alt=""
-                      loading="lazy"
                       className="size-16 shrink-0 rounded-[1.1rem] object-cover sm:size-20"
                     />
                   ) : null}

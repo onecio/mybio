@@ -133,7 +133,8 @@ export const dashboardNav: NavItem[] = [
   { label: "Links", href: "/dashboard/links", section: "links" },
   { label: "Redes sociais", href: "/dashboard/socials", section: "socials" },
   { label: "Temas", href: "/dashboard/themes", section: "themes" },
-  { label: "Analytics", href: "/dashboard/analytics", section: "analytics" },
+  { label: "Compartilhar", href: "/dashboard/share", section: "share" },
+  { label: "Insights", href: "/dashboard/insights", section: "analytics" },
   { label: "Configurações", href: "/dashboard/settings", section: "settings" },
 ];
 

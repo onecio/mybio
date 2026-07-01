@@ -14,6 +14,7 @@ export type DashboardSection =
   | "links"
   | "socials"
   | "themes"
+  | "share"
   | "analytics"
   | "settings";
 
