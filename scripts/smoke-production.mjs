@@ -30,11 +30,11 @@ async function main() {
     "Página pública deve exibir ação de compartilhamento e identificador do perfil.",
   );
 
-  const og = await fetch(`${baseUrl}/api/og/${profilePath.replace(/^\//, "")}`);
+  const og = await fetch(`${baseUrl}/og-default.svg`);
   addCheck("og_status", og.ok, `HTTP ${og.status}`);
   addCheck(
     "og_content_type",
-    (og.headers.get("content-type") ?? "").includes("image/png"),
+    (og.headers.get("content-type") ?? "").startsWith("image/"),
     `content-type=${og.headers.get("content-type") ?? "ausente"}`,
   );
 

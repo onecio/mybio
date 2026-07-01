@@ -31,7 +31,7 @@ export async function generateMetadata({
   const title = profile.title;
   const description = profile.description.slice(0, 160);
   const canonicalUrl = getAbsoluteUrl(`/${profile.username}`);
-  const ogImageUrl = getAbsoluteUrl(`/api/og/${profile.username}`);
+  const ogImageUrl = getAbsoluteUrl("/og-default.svg");
 
   return {
     title,

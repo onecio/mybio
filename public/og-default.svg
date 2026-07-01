@@ -1,0 +1,54 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="140" y1="40" x2="1030" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF7ED"/>
+      <stop offset="0.52" stop-color="#E0F2FE"/>
+      <stop offset="1" stop-color="#DCFCE7"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0A3D3E"/>
+      <stop offset="1" stop-color="#155E75"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="1200" height="630" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#0F172A" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <circle cx="1050" cy="108" r="140" fill="#F59E0B" fill-opacity="0.08"/>
+  <circle cx="143" cy="530" r="180" fill="#0A3D3E" fill-opacity="0.06"/>
+
+  <g filter="url(#shadow)">
+    <rect x="72" y="66" width="1056" height="498" rx="36" fill="#FFFCF8" fill-opacity="0.92"/>
+  </g>
+
+  <rect x="116" y="112" width="96" height="96" rx="28" fill="url(#accent)"/>
+  <path d="M164 128C190.51 128 212 149.49 212 176C212 202.51 190.51 224 164 224C137.49 224 116 202.51 116 176C116 149.49 137.49 128 164 128Z" stroke="#F8FAFC" stroke-width="5.6"/>
+  <path d="M140 182C155.725 155.273 178.903 146.727 195.172 158.031C189.483 183.108 171.654 200.192 144.069 202.667C147.402 190.282 156.706 180.703 171.746 173.929" stroke="#F8FAFC" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="236" y="151" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="46" font-weight="700">MyBio</text>
+  <text x="236" y="188" fill="#0A3D3E" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="5">PRESENÇA DIGITAL</text>
+
+  <text x="116" y="300" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="68" font-weight="700">Menos ruído. Mais clique.</text>
+  <text x="116" y="356" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="30">
+    Organize links, redes e conversões em uma página elegante, objetiva e pronta para compartilhar.
+  </text>
+
+  <rect x="116" y="414" width="276" height="66" rx="33" fill="#0A3D3E"/>
+  <text x="154" y="456" fill="#F8FAFC" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">mybio.ecomnix.com.br</text>
+
+  <rect x="824" y="146" width="232" height="56" rx="28" fill="#FFF7ED" stroke="#F59E0B" stroke-opacity="0.28"/>
+  <text x="874" y="182" fill="#9A3412" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Link na bio premium</text>
+
+  <rect x="768" y="248" width="288" height="84" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="806" y="286" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Dashboard enxuto</text>
+  <text x="806" y="316" fill="#6B7280" font-family="Arial, Helvetica, sans-serif" font-size="18">Links, identidade e métricas no mesmo fluxo.</text>
+
+  <rect x="768" y="356" width="288" height="84" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="806" y="394" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Compartilhamento confiável</text>
+  <text x="806" y="424" fill="#6B7280" font-family="Arial, Helvetica, sans-serif" font-size="18">Imagem social estática e estável para produção.</text>
+
+  <rect x="768" y="464" width="288" height="84" rx="28" fill="#FFFFFF" stroke="#E5E7EB"/>
+  <text x="806" y="502" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Conversão em foco</text>
+  <text x="806" y="532" fill="#6B7280" font-family="Arial, Helvetica, sans-serif" font-size="18">Contato principal, links e redes com prioridade.</text>
+</svg>
