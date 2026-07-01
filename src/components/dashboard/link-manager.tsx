@@ -26,9 +26,11 @@ import {
   toggleLinkAction,
   updateLinkAction,
 } from "@/actions/dashboard";
+import { IconPicker } from "@/components/forms/icon-picker";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Button } from "@/components/ui/button";
 import type { DashboardLink } from "@/lib/queries/mybio";
+import { renderPlatformIcon } from "@/lib/platform-icons";
 
 interface LinkManagerProps {
   initialLinks: DashboardLink[];
@@ -72,6 +74,9 @@ function SortableLink({ link }: { link: DashboardLink }) {
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
+            <span className="grid size-9 place-items-center rounded-xl border border-[var(--brand-line)] bg-white text-[var(--brand-petrol-deep)]">
+              {renderPlatformIcon(link.icon, "size-4")}
+            </span>
             <h2 className="truncate text-base font-semibold text-[var(--brand-ink)] sm:text-lg">
               {link.title}
             </h2>
@@ -133,10 +138,9 @@ function SortableLink({ link }: { link: DashboardLink }) {
               Thumbnail
               <input className={inputClassName} name="thumbnailUrl" type="url" defaultValue={link.thumbnail_url ?? ""} />
             </label>
-            <label className="grid gap-1.5 text-sm font-medium">
-              Ícone
-              <input className={inputClassName} name="icon" defaultValue={link.icon ?? "link"} />
-            </label>
+            <div className="sm:col-span-2">
+              <IconPicker name="icon" defaultValue={link.icon ?? "link"} />
+            </div>
             <label className="grid gap-1.5 text-sm font-medium">
               Publicar em
               <input className={inputClassName} name="scheduledAt" type="datetime-local" defaultValue={toLocalDateTime(link.scheduled_at)} />

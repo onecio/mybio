@@ -2,10 +2,6 @@
 import {
   ArrowUpRight,
   BadgeCheck,
-  BriefcaseBusiness,
-  Camera,
-  Music2,
-  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -16,13 +12,8 @@ import { PublicShareButton } from "@/components/public-profile/share-button";
 import { Button } from "@/components/ui/button";
 import { ResilientImage } from "@/components/ui/resilient-image";
 import { SurfaceCard } from "@/components/ui/surface-card";
+import { getPlatformIconOption, renderPlatformIcon } from "@/lib/platform-icons";
 import { getPublicProfileByUsername } from "@/lib/queries/mybio";
-
-const socialIconMap = {
-  instagram: Camera,
-  linkedin: BriefcaseBusiness,
-  tiktok: Music2,
-};
 
 export async function generateMetadata({
   params,
@@ -118,7 +109,7 @@ export default async function PublicProfilePage({
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               {profile.socials.map((social) => {
-                const Icon = socialIconMap[social.platform as keyof typeof socialIconMap] ?? Sparkles;
+                const Icon = getPlatformIconOption(social.platform).icon;
 
                 return (
                   <a
@@ -149,6 +140,9 @@ export default async function PublicProfilePage({
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex min-w-0 items-center gap-4">
+                  <span className="grid size-12 shrink-0 place-items-center rounded-[1.1rem] border border-[var(--brand-line)] bg-white text-[var(--brand-petrol-deep)] shadow-[0_14px_34px_-26px_rgba(15,23,42,0.3)]">
+                    {renderPlatformIcon(link.icon, "size-4")}
+                  </span>
                   {link.thumbnailUrl ? (
                     <ResilientImage
                       src={link.thumbnailUrl}

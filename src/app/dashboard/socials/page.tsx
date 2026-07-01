@@ -1,19 +1,13 @@
-import { BriefcaseBusiness, Camera, Globe, Music2 } from "lucide-react";
-
 import { createSocialAction, deleteSocialAction } from "@/actions/dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { EmptyState } from "@/components/dashboard/empty-state";
+import { PlatformSelect } from "@/components/forms/platform-select";
 import { StatusMessage } from "@/components/forms/status-message";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { Field, TextInput } from "@/components/ui/field";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { getDashboardData } from "@/lib/queries/mybio";
-
-const iconMap = {
-  instagram: Camera,
-  linkedin: BriefcaseBusiness,
-  tiktok: Music2,
-};
+import { getPlatformIconOption } from "@/lib/platform-icons";
 
 export default async function DashboardSocialsPage({
   searchParams,
@@ -41,7 +35,7 @@ export default async function DashboardSocialsPage({
           <div className="grid gap-4">
             {dashboardData.socials.length > 0 ? (
               dashboardData.socials.map((social) => {
-              const Icon = iconMap[social.platform as keyof typeof iconMap] ?? Globe;
+              const Icon = getPlatformIconOption(social.platform).icon;
 
               return (
                 <div
@@ -95,11 +89,7 @@ export default async function DashboardSocialsPage({
           </h2>
           <form action={createSocialAction} className="mt-6 grid gap-4">
             <Field label="Plataforma">
-              <TextInput
-                name="platform"
-                placeholder="instagram, linkedin, tiktok, youtube..."
-                required
-              />
+              <PlatformSelect name="platform" />
             </Field>
             <Field label="Handle" hint="Usado apenas para validar e orientar a URL.">
               <TextInput name="handle" placeholder="@seuperfil" required />

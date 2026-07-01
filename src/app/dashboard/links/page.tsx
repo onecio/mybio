@@ -3,6 +3,7 @@ import { ExternalLink, Plus, Share2 } from "lucide-react";
 import { createLinkAction } from "@/actions/dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { EmptyState } from "@/components/dashboard/empty-state";
+import { IconPicker } from "@/components/forms/icon-picker";
 import { LinkManager } from "@/components/dashboard/link-manager";
 import { StatusMessage } from "@/components/forms/status-message";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -60,6 +61,9 @@ export default async function DashboardLinksPage({
               <Field label="Imagem" hint="Opcional">
                 <TextInput name="thumbnailUrl" type="url" placeholder="https://.../imagem.jpg" />
               </Field>
+              <div className="sm:col-span-2">
+                <IconPicker name="icon" defaultValue="link" />
+              </div>
               <details className="sm:col-span-2">
                 <summary className="cursor-pointer text-sm font-semibold text-[var(--brand-petrol)]">Opções avançadas</summary>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -70,7 +74,6 @@ export default async function DashboardLinksPage({
                   </label>
                 </div>
               </details>
-              <input type="hidden" name="icon" value="link" />
               <div className="sm:col-span-2">
                 <SubmitButton label="Adicionar" pendingLabel="Adicionando..." />
               </div>

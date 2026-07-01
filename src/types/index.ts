@@ -2,11 +2,25 @@ export type SocialPlatform =
   | "instagram"
   | "tiktok"
   | "youtube"
+  | "facebook"
+  | "whatsapp"
+  | "telegram"
   | "linkedin"
   | "x"
   | "spotify"
+  | "behance"
   | "dribbble"
-  | "github";
+  | "github"
+  | "twitch"
+  | "discord"
+  | "medium"
+  | "substack"
+  | "pinterest"
+  | "threads"
+  | "email"
+  | "website"
+  | "store"
+  | "portfolio";
 
 export type DashboardSection =
   | "dashboard"
