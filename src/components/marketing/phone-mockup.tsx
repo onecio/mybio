@@ -1,4 +1,4 @@
-import { BadgeCheck, MapPin, PlayCircle } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, MapPin } from "lucide-react";
 
 import type { UserProfile } from "@/types";
 import { SurfaceCard } from "@/components/ui/surface-card";
@@ -39,10 +39,12 @@ export function PhoneMockup({ profile, compact = false }: PhoneMockupProps) {
               ) : null}
             </div>
 
-            <div className="flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-xs font-medium text-stone-500">
-              <MapPin className="size-3.5" />
-              {profile.location}
-            </div>
+            {!compact ? (
+              <div className="flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-xs font-medium text-stone-500">
+                <MapPin className="size-3.5" />
+                {profile.location}
+              </div>
+            ) : null}
 
             <div className="grid gap-3">
               {visibleLinks.map((link) => (
@@ -56,14 +58,14 @@ export function PhoneMockup({ profile, compact = false }: PhoneMockupProps) {
                       <p className="text-xs text-stone-500">{link.description}</p>
                     </div>
                     <span className="flex size-10 items-center justify-center rounded-full bg-stone-950 text-white">
-                      <PlayCircle className="size-4" />
+                      <ArrowUpRight className="size-4" />
                     </span>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            {!compact ? <div className="grid grid-cols-3 gap-3">
               {profile.stats.slice(0, 3).map((stat) => (
                 <div
                   key={stat.label}
@@ -75,7 +77,7 @@ export function PhoneMockup({ profile, compact = false }: PhoneMockupProps) {
                   <p className="mt-1 text-sm font-semibold text-stone-900">{stat.value}</p>
                 </div>
               ))}
-            </div>
+            </div> : null}
           </SurfaceCard>
         </div>
       </div>

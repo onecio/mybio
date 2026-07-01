@@ -4,8 +4,9 @@ import { selectThemeAction } from "@/actions/dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { StatusMessage } from "@/components/forms/status-message";
 import { SubmitButton } from "@/components/forms/submit-button";
+import { PhoneMockup } from "@/components/marketing/phone-mockup";
 import { SurfaceCard } from "@/components/ui/surface-card";
-import { getDashboardData, toThemePreset } from "@/lib/queries/mybio";
+import { getDashboardData, toPreviewProfile, toThemePreset } from "@/lib/queries/mybio";
 
 export default async function DashboardThemesPage({
   searchParams,
@@ -26,22 +27,23 @@ export default async function DashboardThemesPage({
   return (
     <div className="grid gap-6">
       <DashboardHeader
-        title="Temas e identidade"
-        description="Escolha o tema salvo no Supabase para atualizar a aparência da página pública sem depender de mocks."
+        title="Aparência"
+        description="Escolha uma identidade visual. A alteração é aplicada à página pública."
       />
 
       <StatusMessage error={params.error} success={params.success} />
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
+        <section className="grid gap-4 md:grid-cols-2">
         {themePresets.map((theme) => (
-          <SurfaceCard key={theme.id} className="rounded-[2.2rem] p-5">
+          <SurfaceCard key={theme.id} className="rounded-2xl p-4">
             <div
               className="h-36 rounded-[1.7rem] border border-white/70"
               style={{ background: theme.accent }}
             />
             <div className="mt-5 flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-2xl font-semibold tracking-[-0.04em] text-stone-950">
+                <h2 className="text-xl font-semibold tracking-[-0.03em] text-stone-950">
                   {theme.name}
                 </h2>
                 <p className="mt-2 text-sm leading-7 text-stone-600">{theme.description}</p>
@@ -79,6 +81,16 @@ export default async function DashboardThemesPage({
             </div>
           </SurfaceCard>
         ))}
+        </section>
+        <aside className="hidden lg:sticky lg:top-7 lg:block">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-sm font-bold text-stone-900">Preview</p>
+            <span className="text-xs text-stone-500">Página pública</span>
+          </div>
+          <div className="rounded-[2rem] border border-stone-200 bg-white p-4 shadow-sm">
+            <PhoneMockup profile={toPreviewProfile(dashboardData)} compact />
+          </div>
+        </aside>
       </div>
     </div>
   );

@@ -16,8 +16,8 @@ export default async function ForgotPasswordPage({
   return (
     <AuthShell
       eyebrow="recuperação"
-      title="Recupere o acesso sem perder o ritmo."
-      description="Fluxo preparado para redefinição de senha com UX clara, visual premium e estrutura pronta para integração real."
+      title="Recuperar acesso"
+      description="Enviaremos um link de redefinição para seu e-mail."
       footer={
         <p>
           Lembrou da senha?{" "}
@@ -27,25 +27,12 @@ export default async function ForgotPasswordPage({
         </p>
       }
     >
-      <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
-          acesso rápido
-        </p>
-        <h2 className="text-3xl font-semibold tracking-[-0.04em] text-stone-950">
-          Redefinir senha
-        </h2>
-        <p className="text-sm leading-7 text-stone-600">
-          Informe seu e-mail para receber o link de recuperação do Supabase e concluir a troca
-          de senha.
-        </p>
-      </div>
-
       <form action={forgotPasswordAction} className="grid gap-4">
         <StatusMessage error={params.error} success={params.success} />
         <Field label="E-mail">
           <TextInput type="email" name="email" placeholder="voce@exemplo.com" required />
         </Field>
-        <SubmitButton label="Enviar instruções" pendingLabel="Enviando..." size="lg" className="mt-2" />
+        <SubmitButton label="Enviar link" pendingLabel="Enviando..." size="lg" className="mt-2 w-full" />
       </form>
     </AuthShell>
   );

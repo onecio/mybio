@@ -1,234 +1,71 @@
-import {
-  ArrowRight,
-  BadgeCheck,
-  BarChart3,
-  CloudUpload,
-  ShieldCheck,
-  Smartphone,
-  Sparkles,
-} from "lucide-react";
-import Link from "next/link";
+import { ArrowRight, BarChart3, GripVertical, Palette, ShieldCheck } from "lucide-react";
 
 import { FloatingHeader } from "@/components/marketing/floating-header";
-import { PhoneMockup } from "@/components/marketing/phone-mockup";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SectionHeading } from "@/components/ui/section-heading";
-import { SurfaceCard } from "@/components/ui/surface-card";
-import {
-  benefits,
-  featureItems,
-  mockProfile,
-  processSteps,
-  showcasePages,
-  socialProof,
-} from "@/lib/mock-data";
+import { BrandMark } from "@/components/ui/brand-mark";
 
-const featureIconMap = {
-  sparkles: Sparkles,
-  "bar-chart-3": BarChart3,
-  smartphone: Smartphone,
-  "shield-check": ShieldCheck,
-  "cloud-upload": CloudUpload,
-  "badge-check": BadgeCheck,
-} as const;
+const benefits = [
+  { icon: GripVertical, title: "Organize", text: "Adicione, edite e reordene links em segundos." },
+  { icon: Palette, title: "Personalize", text: "Escolha uma aparência clara e profissional." },
+  { icon: BarChart3, title: "Entenda", text: "Acompanhe visualizações, cliques e taxa de clique." },
+];
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="pb-10">
+    <main className="min-h-screen bg-[#f6f6f4] text-stone-950">
       <FloatingHeader />
 
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-18 px-4 pt-6 md:gap-24 md:px-6 md:pt-10">
-        <section className="relative overflow-hidden rounded-[1.8rem] border border-[var(--brand-line)] bg-[linear-gradient(145deg,var(--brand-surface)_0%,#edf0e9_58%,#eee2d8_100%)] px-5 py-6 shadow-[0_30px_110px_-58px_rgba(20,25,26,0.42)] md:rounded-[2.4rem] md:px-10 md:py-10">
-          <div className="absolute right-10 top-10 hidden size-44 rounded-full bg-[var(--brand-sage)]/25 blur-3xl lg:block" />
-          <div className="absolute bottom-10 left-10 hidden size-44 rounded-full bg-[var(--brand-copper)]/10 blur-3xl lg:block" />
-
-          <div className="grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr]">
-            <div className="relative z-10 grid gap-8">
-              <div className="grid gap-5">
-                <Badge className="w-fit">presença digital com propósito</Badge>
-                <div className="grid gap-5">
-                  <h1 className="max-w-4xl font-display text-[3.15rem] leading-[0.92] tracking-[-0.06em] text-stone-950 sm:text-[4.2rem] md:text-7xl xl:text-[6.8rem]">
-                    Sua presença digital, organizada com clareza e identidade.
-                  </h1>
-                  <p className="max-w-2xl text-base leading-7 text-stone-600 md:text-xl md:leading-8">
-                    Reúna conteúdo, comunidade e oportunidades em uma página rápida,
-                    mensurável e criada para representar você sem aparência de template.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Button href="/register" size="lg" className="gap-2">
-                  Criar meu MyBio <ArrowRight className="size-4" />
-                </Button>
-                <Button href="/dashboard" size="lg" variant="secondary">
-                  Explorar dashboard
-                </Button>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {socialProof.map((item) => (
-                  <SurfaceCard key={item} className="rounded-[1.6rem] p-4">
-                    <p className="text-sm leading-6 text-stone-700">{item}</p>
-                  </SurfaceCard>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative z-10">
-              <PhoneMockup profile={mockProfile} />
-            </div>
+      <section className="mx-auto grid min-h-[78vh] w-full max-w-7xl items-center gap-12 px-5 pb-16 pt-28 md:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:pt-32">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--brand-petrol)]">Sua presença em um só link</p>
+          <h1 className="mt-5 max-w-3xl font-display text-5xl leading-[0.95] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
+            Tudo o que importa, em uma página simples.
+          </h1>
+          <p className="mt-6 max-w-xl text-lg leading-8 text-stone-600">
+            Reúna links, redes e conteúdos. Personalize sua página, compartilhe o QR Code e acompanhe os resultados.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button href="/register" size="lg" className="gap-2">Criar meu MyBio <ArrowRight className="size-4" /></Button>
+            <Button href="/login" variant="secondary" size="lg">Entrar</Button>
           </div>
-        </section>
-
-        <section id="beneficios" className="grid gap-8">
-          <SectionHeading
-            eyebrow="benefícios"
-            title="Visual refinado, estrutura estratégica e percepção de valor instantânea."
-            description="Cada bloco foi desenhado para parecer produto premium desde o primeiro scroll, sem sacrificar clareza nem organização."
-          />
-          <div className="grid gap-6 lg:grid-cols-3">
-            {benefits.map((item) => (
-              <SurfaceCard key={item.title} className="rounded-[2rem] p-7">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
-                  {item.eyebrow}
-                </p>
-                <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
-                  {item.title}
-                </h3>
-                <p className="mt-4 text-base leading-8 text-stone-600">{item.description}</p>
-              </SurfaceCard>
-            ))}
+          <div className="mt-6 flex items-center gap-2 text-sm text-stone-500">
+            <ShieldCheck className="size-4 text-[var(--brand-petrol)]" /> Gratuito, seguro e otimizado para smartphones.
           </div>
-        </section>
-
-        <section
-          id="como-funciona"
-          className="grid gap-8 rounded-[2.2rem] border border-white/70 bg-white/75 p-5 shadow-[0_25px_80px_-42px_rgba(15,23,42,0.22)] md:gap-10 md:rounded-[2.6rem] md:p-8"
-        >
-          <SectionHeading
-            eyebrow="como funciona"
-            title="Uma jornada simples com acabamento premium do início ao fim."
-            description="Do cadastro ao acompanhamento de resultados, a base entrega clareza operacional e um visual de alto nível."
-          />
-          <div className="grid gap-5 md:grid-cols-3">
-            {processSteps.map((item) => (
-              <div
-                key={item.step}
-                className="rounded-[2rem] border border-stone-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(255,248,238,0.84)_100%)] p-6"
-              >
-                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-600">
-                  {item.step}
-                </p>
-                <h3 className="mt-4 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="showcase" className="grid gap-8">
-          <SectionHeading
-            eyebrow="showcase de páginas"
-            title="Modelos com linguagem visual própria para diferentes posicionamentos."
-            description="A mesma base suporta creators, especialistas e marcas com abordagens estéticas distintas, mantendo a assinatura premium."
-          />
-          <div className="grid gap-6 lg:grid-cols-3">
-            {showcasePages.map((page) => (
-              <SurfaceCard key={page.title} className="overflow-hidden rounded-[2.2rem] p-0">
-                <div className={`h-36 bg-gradient-to-br ${page.accent}`} />
-                <div className="p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-                    {page.category}
-                  </p>
-                  <h3 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-stone-950">
-                    {page.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-stone-600">{page.description}</p>
-                </div>
-              </SurfaceCard>
-            ))}
-          </div>
-        </section>
-
-        <section id="recursos" className="grid gap-8">
-          <SectionHeading
-            eyebrow="recursos"
-            title="Tudo o que você precisa para lançar uma bio page com cara de produto premium."
-            description="Além da landing, a base já nasce com autenticação, dashboard, temas, analytics e estrutura para mídia e backend."
-          />
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {featureItems.map((item) => {
-              const Icon = featureIconMap[item.icon as keyof typeof featureIconMap] ?? Sparkles;
-
-              return (
-                <SurfaceCard key={item.title} className="rounded-[1.9rem] p-6">
-                  <div className="flex size-12 items-center justify-center rounded-[1.3rem] bg-[linear-gradient(135deg,rgba(245,158,11,0.16)_0%,rgba(56,189,248,0.14)_100%)] text-stone-900">
-                    <Icon className="size-5" />
-                  </div>
-                  <h3 className="mt-5 text-xl font-semibold tracking-[-0.03em] text-stone-950">
-                    {item.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-7 text-stone-600">{item.description}</p>
-                </SurfaceCard>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="relative overflow-hidden rounded-[2rem] border border-[var(--brand-petrol-deep)] bg-[var(--brand-petrol-deep)] p-6 text-white shadow-[0_36px_100px_-52px_rgba(10,61,62,0.8)] md:rounded-[2.4rem] md:p-10">
-          <div className="absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_center,_rgba(146,167,154,0.28),_transparent_62%)]" />
-          <div className="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div className="grid gap-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/70">
-                pronto para lançar
-              </p>
-              <h2 className="max-w-3xl font-display text-4xl leading-none tracking-[-0.05em] text-white md:text-6xl">
-                Substitua o visual genérico por uma presença memorável.
-              </h2>
-              <p className="max-w-2xl text-lg leading-8 text-white/85">
-                Comece com a base pronta do MyBio, personalize sua estética e evolua para
-                uma bio page com padrão de produto premium.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3 lg:justify-end">
-              <Button
-                href="/register"
-                size="lg"
-                className="bg-white text-stone-950 shadow-[0_24px_50px_-30px_rgba(255,255,255,0.9)] hover:bg-white"
-              >
-                Criar conta agora
-              </Button>
-              <Button
-                href="/lunaferraz"
-                size="lg"
-                variant="secondary"
-                className="border-white/40 bg-white/12 text-white hover:bg-white/18"
-              >
-                Ver página pública
-              </Button>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="mx-auto mt-12 flex w-full max-w-7xl flex-col gap-6 px-4 pb-10 pt-6 text-sm text-stone-500 md:flex-row md:items-center md:justify-between md:px-6">
-        <p>MyBio Premium Base — pensado para creators, experts e marcas digitais.</p>
-        <div className="flex flex-wrap gap-4">
-          <Link href="/login" className="hover:text-stone-950">
-            Login
-          </Link>
-          <Link href="/register" className="hover:text-stone-950">
-            Criar conta
-          </Link>
-          <Link href="/dashboard" className="hover:text-stone-950">
-            Dashboard
-          </Link>
         </div>
-      </footer>
-    </div>
+
+        <div className="mx-auto w-full max-w-md rounded-[2.8rem] border border-stone-200 bg-white p-5 shadow-[0_35px_100px_-55px_rgba(20,25,26,0.45)] sm:p-7">
+          <div className="mx-auto grid size-20 place-items-center rounded-full bg-[var(--brand-petrol)] text-xl font-bold text-white">MB</div>
+          <h2 className="mt-4 text-center text-2xl font-bold">Meu perfil</h2>
+          <p className="mt-1 text-center text-sm text-stone-500">@meuperfil</p>
+          <p className="mx-auto mt-3 max-w-xs text-center text-sm leading-6 text-stone-600">Conteúdo, projetos e formas de contato.</p>
+          <div className="mt-6 grid gap-3">
+            {["Meu principal projeto", "Agende uma conversa", "Conteúdos gratuitos"].map((label) => (
+              <div key={label} className="flex h-14 items-center justify-between rounded-2xl border border-stone-200 bg-stone-50 px-4 text-sm font-semibold">
+                {label}<ArrowRight className="size-4" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-stone-200 bg-white">
+        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 md:grid-cols-3 md:px-8">
+          {benefits.map(({ icon: Icon, title, text }) => (
+            <div key={title}>
+              <span className="grid size-11 place-items-center rounded-xl bg-[var(--brand-sage-soft)] text-[var(--brand-petrol)]"><Icon className="size-5" /></span>
+              <h2 className="mt-4 text-xl font-bold">{title}</h2>
+              <p className="mt-2 text-sm leading-6 text-stone-500">{text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-4xl px-5 py-20 text-center md:px-8">
+        <BrandMark className="mx-auto w-fit" />
+        <h2 className="mt-8 font-display text-4xl tracking-[-0.045em] sm:text-5xl">Sua página pode estar pronta hoje.</h2>
+        <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-stone-600">Crie a conta, adicione os links e compartilhe. Sem configuração complicada.</p>
+        <Button href="/register" size="lg" className="mt-8 gap-2">Começar agora <ArrowRight className="size-4" /></Button>
+      </section>
+    </main>
   );
 }

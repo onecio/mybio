@@ -17,8 +17,8 @@ export default async function RegisterPage({
   return (
     <AuthShell
       eyebrow="criar conta"
-      title="Comece sua bio page com padrão premium."
-      description="Cadastre-se, escolha sua estética inicial e publique uma presença forte desde o primeiro acesso."
+      title="Criar conta"
+      description="Publique seus links em poucos minutos."
       footer={
         <p>
           Já possui uma conta?{" "}
@@ -28,19 +28,6 @@ export default async function RegisterPage({
         </p>
       }
     >
-      <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
-          onboarding elegante
-        </p>
-        <h2 className="text-3xl font-semibold tracking-[-0.04em] text-stone-950">
-          Crie sua conta MyBio
-        </h2>
-        <p className="text-sm leading-7 text-stone-600">
-          Seu perfil base é criado no Supabase junto com a página pública inicial, pronto para
-          personalização no dashboard.
-        </p>
-      </div>
-
       <form action={registerAction} className="grid gap-4">
         <StatusMessage error={params.error} success={params.success} />
         <div className="grid gap-4 md:grid-cols-2">
@@ -62,7 +49,7 @@ export default async function RegisterPage({
           Aceito os termos e autorizo a criação da minha conta e da minha página inicial no
           MyBio via Supabase.
         </label>
-        <SubmitButton label="Criar conta premium" pendingLabel="Criando conta..." size="lg" className="mt-2" />
+        <SubmitButton label="Criar conta" pendingLabel="Criando conta..." size="lg" className="mt-2 w-full" />
       </form>
 
       <SocialLogin />
