@@ -66,6 +66,9 @@ export default async function PublicProfilePage({
     backgroundColor: profile.themeConfig.backgroundColor,
     color: profile.themeConfig.textColor,
   };
+  const priorityContacts = profile.socials.filter((social) =>
+    ["email", "whatsapp", "telegram", "website"].includes(social.platform),
+  );
 
   return (
     <main className="page-shell min-h-screen px-4 py-6 md:px-6 md:py-8" style={themeStyle}>
@@ -108,6 +111,21 @@ export default async function PublicProfilePage({
             </p>
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
+              {priorityContacts.slice(0, 2).map((social) => {
+                const Icon = getPlatformIconOption(social.platform).icon;
+
+                return (
+                  <a
+                    key={`priority-${social.id}`}
+                    href={social.url}
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brand-petrol)] px-5 py-3 text-sm font-semibold text-white shadow-[0_20px_40px_-28px_rgba(15,23,42,0.45)] transition hover:bg-[var(--brand-copper)]"
+                  >
+                    <Icon className="size-4" />
+                    {social.platform === "email" ? "Entrar em contato" : "Falar agora"}
+                  </a>
+                );
+              })}
+
               {profile.socials.map((social) => {
                 const Icon = getPlatformIconOption(social.platform).icon;
 
@@ -128,51 +146,60 @@ export default async function PublicProfilePage({
         </SurfaceCard>
 
         <div className="grid gap-4">
-          {profile.links.map((link) => (
-            <a
-              key={link.id}
-              href={`/api/links/${link.id}/click`}
-              className={`group overflow-hidden rounded-[1.6rem] border bg-[var(--brand-surface)] p-4 shadow-[0_22px_70px_-44px_rgba(20,25,26,0.36)] transition hover:-translate-y-1 sm:p-5 ${
-                link.featured
-                  ? "border-[var(--brand-copper)] ring-1 ring-[var(--brand-copper)]/20"
-                  : "border-[var(--brand-line)]"
-              }`}
-            >
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex min-w-0 items-center gap-4">
-                  <span className="grid size-12 shrink-0 place-items-center rounded-[1.1rem] border border-[var(--brand-line)] bg-white text-[var(--brand-petrol-deep)] shadow-[0_14px_34px_-26px_rgba(15,23,42,0.3)]">
-                    {renderPlatformIcon(link.icon, "size-4")}
+          {profile.links.length > 0 ? (
+            profile.links.map((link) => (
+              <a
+                key={link.id}
+                href={`/api/links/${link.id}/click`}
+                className={`group overflow-hidden rounded-[1.6rem] border bg-[var(--brand-surface)] p-4 shadow-[0_22px_70px_-44px_rgba(20,25,26,0.36)] transition hover:-translate-y-1 sm:p-5 ${
+                  link.featured
+                    ? "border-[var(--brand-copper)] ring-1 ring-[var(--brand-copper)]/20"
+                    : "border-[var(--brand-line)]"
+                }`}
+              >
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex min-w-0 items-center gap-4">
+                    <span className="grid size-12 shrink-0 place-items-center rounded-[1.1rem] border border-[var(--brand-line)] bg-white text-[var(--brand-petrol-deep)] shadow-[0_14px_34px_-26px_rgba(15,23,42,0.3)]">
+                      {renderPlatformIcon(link.icon, "size-4")}
+                    </span>
+                    {link.thumbnailUrl ? (
+                      <ResilientImage
+                        src={link.thumbnailUrl}
+                        alt=""
+                        className="size-16 shrink-0 rounded-[1.1rem] object-cover sm:size-20"
+                      />
+                    ) : null}
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="text-xl font-semibold tracking-[-0.03em] text-stone-950">
+                          {link.title}
+                        </h2>
+                        {link.featured ? (
+                          <span className="rounded-full bg-[#f1dfd3] px-3 py-1 text-xs font-semibold text-[#7e3f25]">
+                            destaque
+                          </span>
+                        ) : null}
+                      </div>
+                      {link.description ? (
+                        <p className="mt-2 text-sm leading-6 text-stone-600">{link.description}</p>
+                      ) : null}
+                      <p className="mt-1 truncate text-xs text-stone-500">{link.hostname}</p>
+                    </div>
+                  </div>
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-petrol)] text-white transition group-hover:bg-[var(--brand-copper)]">
+                    <ArrowUpRight className="size-4" />
                   </span>
-                  {link.thumbnailUrl ? (
-                    <ResilientImage
-                      src={link.thumbnailUrl}
-                      alt=""
-                      className="size-16 shrink-0 rounded-[1.1rem] object-cover sm:size-20"
-                    />
-                  ) : null}
-                  <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-xl font-semibold tracking-[-0.03em] text-stone-950">
-                      {link.title}
-                    </h2>
-                    {link.featured ? (
-                      <span className="rounded-full bg-[#f1dfd3] px-3 py-1 text-xs font-semibold text-[#7e3f25]">
-                        destaque
-                      </span>
-                    ) : null}
-                  </div>
-                    {link.description ? (
-                      <p className="mt-2 text-sm leading-6 text-stone-600">{link.description}</p>
-                    ) : null}
-                    <p className="mt-1 truncate text-xs text-stone-500">{link.hostname}</p>
-                  </div>
                 </div>
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-petrol)] text-white transition group-hover:bg-[var(--brand-copper)]">
-                  <ArrowUpRight className="size-4" />
-                </span>
-              </div>
-            </a>
-          ))}
+              </a>
+            ))
+          ) : (
+            <SurfaceCard className="rounded-[1.8rem] p-6 text-center">
+              <p className="text-lg font-semibold text-stone-950">Este perfil ainda não publicou links.</p>
+              <p className="mt-2 text-sm leading-6 text-stone-500">
+                Volte em breve ou entre em contato pelos canais exibidos acima.
+              </p>
+            </SurfaceCard>
+          )}
         </div>
       </div>
     </main>
