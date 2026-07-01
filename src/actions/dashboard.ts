@@ -35,6 +35,11 @@ function getOptionalIsoDate(formData: FormData, key: string) {
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
+function getReturnTo(formData: FormData, fallback: string) {
+  const value = getString(formData, "returnTo");
+  return value.startsWith("/dashboard") ? value : fallback;
+}
+
 function buildRedirect(pathname: string, params: Record<string, string | undefined>): never {
   const searchParams = new URLSearchParams();
 
@@ -315,6 +320,7 @@ export async function deleteLinkAction(formData: FormData) {
 }
 
 export async function createSocialAction(formData: FormData) {
+  const returnTo = getReturnTo(formData, "/dashboard/profile");
   const parsed = socialSchema.safeParse({
     platform: getString(formData, "platform").toLowerCase(),
     handle: getString(formData, "handle") || "perfil",
@@ -322,7 +328,7 @@ export async function createSocialAction(formData: FormData) {
   });
 
   if (!parsed.success) {
-    buildRedirect("/dashboard/socials", {
+    buildRedirect(returnTo, {
       error: parsed.error.issues[0]?.message ?? "Não foi possível validar a rede social.",
     });
   }
@@ -340,29 +346,30 @@ export async function createSocialAction(formData: FormData) {
   );
 
   if (error) {
-    buildRedirect("/dashboard/socials", { error: error.message });
+    buildRedirect(returnTo, { error: error.message });
   }
 
   revalidateDashboardRoutes(profilePage.username);
-  buildRedirect("/dashboard/socials", { success: "Rede social salva." });
+  buildRedirect(returnTo, { success: "Rede social salva." });
 }
 
 export async function deleteSocialAction(formData: FormData) {
+  const returnTo = getReturnTo(formData, "/dashboard/profile");
   const socialId = getString(formData, "socialId");
 
   if (!socialId) {
-    buildRedirect("/dashboard/socials", { error: "Rede social inválida." });
+    buildRedirect(returnTo, { error: "Rede social inválida." });
   }
 
   const { supabase, profilePage } = await getAuthenticatedResources();
   const { error } = await supabase.from("profile_socials").delete().eq("id", socialId);
 
   if (error) {
-    buildRedirect("/dashboard/socials", { error: error.message });
+    buildRedirect(returnTo, { error: error.message });
   }
 
   revalidateDashboardRoutes(profilePage.username);
-  buildRedirect("/dashboard/socials", { success: "Rede social removida." });
+  buildRedirect(returnTo, { success: "Rede social removida." });
 }
 
 export async function selectThemeAction(formData: FormData) {

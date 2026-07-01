@@ -1,7 +1,8 @@
-import { ExternalLink, Palette, Share2, Users } from "lucide-react";
+import { ExternalLink, Palette, Share2 } from "lucide-react";
 
 import { saveProfileAction } from "@/actions/dashboard";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { SocialManagerPanel } from "@/components/dashboard/social-manager-panel";
 import { CloudinaryAvatarField } from "@/components/forms/cloudinary-avatar-field";
 import { StatusMessage } from "@/components/forms/status-message";
 import { SubmitButton } from "@/components/forms/submit-button";
@@ -81,9 +82,6 @@ export default async function DashboardProfilePage({
               Use apenas os canais que realmente ajudam o visitante a agir.
             </p>
           </div>
-          <Button href="/dashboard/socials" variant="secondary" className="h-14 justify-start gap-3 rounded-xl bg-white px-4">
-            <Users className="size-5" /> Gerenciar redes sociais
-          </Button>
           <Button href="/dashboard/design" variant="secondary" className="h-14 justify-start gap-3 rounded-xl bg-white px-4">
             <Palette className="size-5" /> Alterar aparência
           </Button>
@@ -92,6 +90,19 @@ export default async function DashboardProfilePage({
           </p>
         </aside>
       </div>
+
+      <section id="redes-sociais" className="grid gap-4">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-[-0.04em] text-stone-950">
+            Redes sociais
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-500">
+            Trate redes como suporte do perfil. Adicione poucos canais, com prioridade para os que
+            realmente ajudam a converter ou dar confiança.
+          </p>
+        </div>
+        <SocialManagerPanel socials={data.socials} returnTo="/dashboard/profile" />
+      </section>
     </div>
   );
 }

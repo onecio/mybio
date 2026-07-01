@@ -76,17 +76,26 @@ export default async function DashboardLinksPage({
               <Field label="URL">
                 <TextInput name="url" type="url" placeholder="https://..." required />
               </Field>
-              <Field label="Descrição" hint="Opcional">
-                <TextInput name="description" placeholder="Explique o destino" maxLength={140} />
-              </Field>
-              <Field label="Imagem" hint="Opcional">
-                <TextInput name="thumbnailUrl" type="url" placeholder="https://.../imagem.jpg" />
-              </Field>
-              <div className="sm:col-span-2">
-                <IconPicker name="icon" defaultValue="link" />
-              </div>
               <details className="sm:col-span-2">
-                <summary className="cursor-pointer text-sm font-semibold text-[var(--brand-petrol)]">Opções avançadas</summary>
+                <summary className="cursor-pointer text-sm font-semibold text-[var(--brand-petrol)]">
+                  Personalizar link
+                </summary>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <Field label="Descrição" hint="Opcional">
+                    <TextInput name="description" placeholder="Explique o destino" maxLength={140} />
+                  </Field>
+                  <Field label="Imagem" hint="Opcional">
+                    <TextInput name="thumbnailUrl" type="url" placeholder="https://.../imagem.jpg" />
+                  </Field>
+                  <div className="sm:col-span-2">
+                    <IconPicker name="icon" defaultValue="link" />
+                  </div>
+                </div>
+              </details>
+              <details className="sm:col-span-2">
+                <summary className="cursor-pointer text-sm font-semibold text-stone-500">
+                  Regras avançadas
+                </summary>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   <Field label="Publicar em"><TextInput name="scheduledAt" type="datetime-local" /></Field>
                   <Field label="Expirar em"><TextInput name="expiresAt" type="datetime-local" /></Field>
