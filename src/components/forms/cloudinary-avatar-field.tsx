@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { ChangeEvent, useMemo, useState } from "react";
-import { ImagePlus, LoaderCircle, RefreshCw, UploadCloud } from "lucide-react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ImagePlus, LoaderCircle, RefreshCw, Trash2, UploadCloud } from "lucide-react";
 
 import { TextInput } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ interface CloudinaryUploadResponse {
 
 interface CloudinaryAvatarFieldProps {
   initialValue?: string | null;
+  fallbackLabel?: string;
 }
 
 const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "";
@@ -25,17 +26,45 @@ const uploadEndpoint = cloudName
   ? `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
   : "";
 
-export function CloudinaryAvatarField({ initialValue }: CloudinaryAvatarFieldProps) {
+function getInitialsFromLabel(value: string) {
+  const parts = value.trim().split(/\s+/).filter(Boolean);
+
+  if (parts.length === 0) {
+    return "MB";
+  }
+
+  return parts
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join("")
+    .toUpperCase();
+}
+
+export function CloudinaryAvatarField({
+  initialValue,
+  fallbackLabel = "Meu MyBio",
+}: CloudinaryAvatarFieldProps) {
   const [avatarUrl, setAvatarUrl] = useState(initialValue ?? "");
+  const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
 
+  useEffect(() => {
+    return () => {
+      if (localPreviewUrl) {
+        URL.revokeObjectURL(localPreviewUrl);
+      }
+    };
+  }, [localPreviewUrl]);
+
+  const previewUrl = localPreviewUrl || avatarUrl;
+
   const initials = useMemo(() => {
-    const urlValue = avatarUrl.trim();
+    const urlValue = previewUrl.trim();
 
     if (!urlValue) {
-      return "MB";
+      return getInitialsFromLabel(fallbackLabel);
     }
 
     try {
@@ -44,20 +73,49 @@ export function CloudinaryAvatarField({ initialValue }: CloudinaryAvatarFieldPro
 
       return hostname.slice(0, 2).toUpperCase();
     } catch {
-      return "AV";
+      return getInitialsFromLabel(fallbackLabel);
     }
-  }, [avatarUrl]);
+  }, [fallbackLabel, previewUrl]);
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
-    if (!file || !isUploadEnabled) {
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setErrorMessage("Selecione um arquivo de imagem válido.");
+      setStatusMessage("");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage("Use uma imagem de até 5 MB para manter o carregamento rápido.");
+      setStatusMessage("");
+      event.target.value = "";
+      return;
+    }
+
+    if (localPreviewUrl) {
+      URL.revokeObjectURL(localPreviewUrl);
+    }
+
+    const nextPreviewUrl = URL.createObjectURL(file);
+    setLocalPreviewUrl(nextPreviewUrl);
+    setErrorMessage("");
+    setStatusMessage("Pré-visualização pronta. Enviando imagem...");
+
+    if (!isUploadEnabled) {
+      setStatusMessage(
+        "Pré-visualização disponível apenas nesta sessão. Publique o Cloudinary para habilitar o envio direto.",
+      );
+      event.target.value = "";
       return;
     }
 
     setIsUploading(true);
-    setErrorMessage("");
-    setStatusMessage("Enviando imagem para o Cloudinary...");
 
     const formData = new FormData();
     formData.append("file", file);
@@ -80,6 +138,7 @@ export function CloudinaryAvatarField({ initialValue }: CloudinaryAvatarFieldPro
       }
 
       setAvatarUrl(nextUrl);
+      setLocalPreviewUrl(null);
       setStatusMessage("Avatar enviado com sucesso. A URL final já foi preenchida no formulário.");
     } catch (error) {
       setErrorMessage(
@@ -87,7 +146,7 @@ export function CloudinaryAvatarField({ initialValue }: CloudinaryAvatarFieldPro
           ? error.message
           : "Falha no upload. Continue com uma URL manual para não interromper a edição.",
       );
-      setStatusMessage("");
+      setStatusMessage("A pré-visualização local foi mantida para conferência.");
     } finally {
       setIsUploading(false);
       event.target.value = "";
@@ -98,9 +157,9 @@ export function CloudinaryAvatarField({ initialValue }: CloudinaryAvatarFieldPro
     <div className="grid gap-3">
       <div className="flex flex-col gap-4 rounded-[1.7rem] border border-stone-200/70 bg-stone-50/70 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-center gap-4">
-          {avatarUrl ? (
+          {previewUrl ? (
             <img
-              src={avatarUrl}
+              src={previewUrl}
               alt="Preview do avatar"
               className="size-20 shrink-0 rounded-[1.6rem] object-cover shadow-[0_20px_50px_-32px_rgba(15,23,42,0.45)]"
             />
@@ -121,28 +180,46 @@ export function CloudinaryAvatarField({ initialValue }: CloudinaryAvatarFieldPro
         </div>
 
         <div className="flex flex-col gap-2 sm:items-end">
-          <label
-            className={cn(
-              "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold tracking-[-0.02em] transition-all",
-              isUploadEnabled
-                ? "bg-[linear-gradient(135deg,var(--amber-500),#ffdca8)] text-stone-950 shadow-[0_20px_60px_-22px_rgba(245,158,11,0.7)] hover:-translate-y-0.5"
-                : "cursor-not-allowed border border-stone-200/80 bg-white/70 text-stone-400",
-            )}
-          >
-            {isUploading ? <LoaderCircle className="size-4 animate-spin" /> : <UploadCloud className="size-4" />}
-            {isUploading ? "Enviando..." : "Enviar imagem"}
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-              disabled={!isUploadEnabled || isUploading}
-            />
-          </label>
+          <div className="flex flex-wrap gap-2 sm:justify-end">
+            <label
+              className={cn(
+                "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-4 py-3 text-sm font-semibold tracking-[-0.02em] transition-all",
+                isUploadEnabled
+                  ? "bg-[linear-gradient(135deg,var(--amber-500),#ffdca8)] text-stone-950 shadow-[0_20px_60px_-22px_rgba(245,158,11,0.7)] hover:-translate-y-0.5"
+                  : "border border-stone-200/80 bg-white/70 text-stone-700",
+              )}
+            >
+              {isUploading ? <LoaderCircle className="size-4 animate-spin" /> : <UploadCloud className="size-4" />}
+              {isUploading ? "Enviando..." : "Selecionar imagem"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+                disabled={isUploading}
+              />
+            </label>
+            <button
+              type="button"
+              onClick={() => {
+                if (localPreviewUrl) {
+                  URL.revokeObjectURL(localPreviewUrl);
+                }
+                setLocalPreviewUrl(null);
+                setAvatarUrl("");
+                setErrorMessage("");
+                setStatusMessage("Avatar removido. Salve o perfil para publicar a alteração.");
+              }}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-stone-200/80 bg-white px-4 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-300"
+            >
+              <Trash2 className="size-4" />
+              Remover
+            </button>
+          </div>
           <p className="text-xs text-stone-400">
             {isUploadEnabled
-              ? "Use arquivos leves para manter a edição mais rápida."
-              : "Quando cloud name e upload preset forem publicados, o envio direto será liberado."}
+              ? "Use imagem quadrada e leve para melhor nitidez no perfil público."
+              : "O upload direto depende do Cloudinary, mas você ainda pode colar uma URL manualmente."}
           </p>
         </div>
       </div>
@@ -155,11 +232,12 @@ export function CloudinaryAvatarField({ initialValue }: CloudinaryAvatarFieldPro
             type="url"
             inputMode="url"
             value={avatarUrl}
-            onChange={(event) => {
-              setAvatarUrl(event.target.value);
-              setErrorMessage("");
-              setStatusMessage("");
-            }}
+          onChange={(event) => {
+            setAvatarUrl(event.target.value);
+            setLocalPreviewUrl(null);
+            setErrorMessage("");
+            setStatusMessage("");
+          }}
             placeholder="https://..."
           />
           <span className="text-xs text-stone-500">
@@ -170,6 +248,10 @@ export function CloudinaryAvatarField({ initialValue }: CloudinaryAvatarFieldPro
         <button
           type="button"
           onClick={() => {
+            if (localPreviewUrl) {
+              URL.revokeObjectURL(localPreviewUrl);
+            }
+            setLocalPreviewUrl(null);
             setAvatarUrl(initialValue ?? "");
             setErrorMessage("");
             setStatusMessage("");

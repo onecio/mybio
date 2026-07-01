@@ -48,7 +48,10 @@ export default async function DashboardProfilePage({
           </Field>
           <div className="grid gap-2 text-sm text-stone-700">
             <span className="font-semibold">Foto de perfil</span>
-            <CloudinaryAvatarField initialValue={data.profile?.avatar_url ?? ""} />
+            <CloudinaryAvatarField
+              initialValue={data.profile?.avatar_url ?? ""}
+              fallbackLabel={data.profile?.title ?? accountName}
+            />
           </div>
           <label className="flex items-center gap-3 rounded-xl bg-stone-50 px-4 py-3 text-sm font-medium text-stone-700">
             <input type="checkbox" name="isPublished" defaultChecked={data.profile?.is_published ?? true} className="size-4 accent-[var(--brand-petrol)]" />
