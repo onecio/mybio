@@ -1,6 +1,7 @@
-import { BarChart3, ExternalLink, Link2, Palette, Share2, UserRound } from "lucide-react";
+import { BarChart3, ExternalLink, Link2, Palette, UserRound } from "lucide-react";
 
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { ShareKit } from "@/components/dashboard/share-kit";
 import { Button } from "@/components/ui/button";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { getDashboardData } from "@/lib/queries/mybio";
@@ -31,7 +32,7 @@ export default async function DashboardPage() {
     {
       label: "Conectar ao menos uma rede",
       done: data.socials.length > 0,
-      href: "/dashboard/socials",
+      href: "/dashboard/profile#redes-sociais",
     },
     {
       label: "Publicar a página",
@@ -49,9 +50,6 @@ export default async function DashboardPage() {
         description="Edite sua página com foco no que mais impacta: links, identidade e publicação."
         action={
           <>
-            <Button href="/dashboard/share" variant="secondary" className="gap-2">
-              <Share2 className="size-4" /> Compartilhar
-            </Button>
             {data.publicUrl ? (
               <Button href={data.publicUrl} variant="secondary" className="gap-2">
                 <ExternalLink className="size-4" /> Ver página
@@ -161,40 +159,53 @@ export default async function DashboardPage() {
         </SurfaceCard>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
-        <SurfaceCard className="rounded-[1.8rem] p-5">
-          <div className="flex items-center gap-3">
-            <Link2 className="size-5 text-[var(--brand-petrol)]" />
-            <h3 className="text-lg font-semibold text-stone-950">Links primeiro</h3>
-          </div>
-          <p className="mt-3 text-sm leading-6 text-stone-500">
-            O painel principal agora prioriza o gerenciamento de links. Compartilhamento e ajustes
-            secundários ficam fora da navegação primária.
-          </p>
-        </SurfaceCard>
+      {data.publicUrl ? (
+        <section className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
+          <SurfaceCard className="rounded-[2rem] p-6">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.24em] text-stone-400">
+                  compartilhar
+                </p>
+                <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
+                  Distribuir sua página
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-500">
+                  Copie o link, compartilhe pelo smartphone ou baixe o QR Code sem sair da visão geral.
+                </p>
+              </div>
+              <span className="inline-flex rounded-full bg-[var(--brand-sage-soft)] px-4 py-2 text-sm font-semibold text-[var(--brand-petrol)]">
+                pronto para divulgar
+              </span>
+            </div>
+            <ShareKit publicUrl={data.publicUrl} title={data.profile?.title ?? "Meu MyBio"} />
+          </SurfaceCard>
 
-        <SurfaceCard className="rounded-[1.8rem] p-5">
-          <div className="flex items-center gap-3">
-            <Share2 className="size-5 text-[var(--brand-petrol)]" />
-            <h3 className="text-lg font-semibold text-stone-950">Compartilhar sem ruído</h3>
-          </div>
-          <p className="mt-3 text-sm leading-6 text-stone-500">
-            A rota de compartilhamento continua disponível, mas agora como ação contextual, não como
-            etapa concorrente de edição.
-          </p>
-        </SurfaceCard>
+          <div className="grid gap-4">
+            <SurfaceCard className="rounded-[1.8rem] p-5">
+              <div className="flex items-center gap-3">
+                <Link2 className="size-5 text-[var(--brand-petrol)]" />
+                <h3 className="text-lg font-semibold text-stone-950">Fluxo principal</h3>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-stone-500">
+                Links, perfil e visual concentram as decisões de maior impacto. O restante do painel
+                funciona apenas como apoio.
+              </p>
+            </SurfaceCard>
 
-        <SurfaceCard className="rounded-[1.8rem] p-5">
-          <div className="flex items-center gap-3">
-            <BarChart3 className="size-5 text-[var(--brand-petrol)]" />
-            <h3 className="text-lg font-semibold text-stone-950">Leitura operacional</h3>
+            <SurfaceCard className="rounded-[1.8rem] p-5">
+              <div className="flex items-center gap-3">
+                <BarChart3 className="size-5 text-[var(--brand-petrol)]" />
+                <h3 className="text-lg font-semibold text-stone-950">Leitura rápida</h3>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-stone-500">
+                Primeiro publique. Depois observe métricas. Em seguida, reordene os links com base
+                na resposta da audiência.
+              </p>
+            </SurfaceCard>
           </div>
-          <p className="mt-3 text-sm leading-6 text-stone-500">
-            O dono vê rapidamente status da página, volume de links e sinais básicos de tração,
-            antes de aprofundar em métricas.
-          </p>
-        </SurfaceCard>
-      </section>
+        </section>
+      ) : null}
     </div>
   );
 }
