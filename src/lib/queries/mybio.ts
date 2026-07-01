@@ -4,6 +4,7 @@ import type { User } from "@supabase/supabase-js";
 
 import type { LinkItem, SocialLink, ThemePreset, UserProfile } from "@/types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 import { getSiteUrl, getSupabaseConfig } from "@/lib/supabase/config";
 import { isCloudinaryUploadEnabled } from "@/lib/cloudinary";
 import type { Database, Json } from "@/types/supabase";
@@ -370,13 +371,23 @@ export const getDashboardData = cache(async (): Promise<DashboardData | null> =>
 });
 
 export const getPublicProfileByUsername = cache(async (username: string) => {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
 
   if (!supabase) {
     return null;
   }
 
-  const { data } = await supabase.rpc("get_profile_by_username", { username } as never);
+  const { data, error } = await supabase.rpc("get_profile_by_username", { username } as never);
+
+  if (error) {
+    console.error("Failed to load public profile", {
+      username,
+      code: error.code,
+      message: error.message,
+      details: error.details,
+    });
+    return null;
+  }
 
   return parsePublicProfilePayload(data);
 });

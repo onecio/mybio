@@ -4,6 +4,10 @@ import { getPublicProfileByUsername } from "@/lib/queries/mybio";
 
 export const runtime = "nodejs";
 
+const responseHeaders = {
+  "Cache-Control": "public, max-age=0, s-maxage=86400, stale-while-revalidate=604800",
+};
+
 export async function GET(
   _request: Request,
   context: { params: Promise<{ username: string }> },
@@ -30,7 +34,7 @@ export async function GET(
           MyBio
         </div>
       ),
-      { width: 1200, height: 630 },
+      { width: 1200, height: 630, headers: responseHeaders },
     );
   }
 
@@ -182,6 +186,6 @@ export async function GET(
         </div>
       </div>
     ),
-    { width: 1200, height: 630 },
+    { width: 1200, height: 630, headers: responseHeaders },
   );
 }
