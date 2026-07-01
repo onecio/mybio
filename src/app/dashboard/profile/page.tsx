@@ -27,7 +27,7 @@ export default async function DashboardProfilePage({
     <div className="grid gap-5">
       <DashboardHeader
         title="Perfil e redes"
-        description="Edite as informações públicas e conecte seus canais."
+        description="Edite nome, bio, avatar e canais."
         action={data.publicUrl ? <Button href={data.publicUrl} variant="secondary" className="gap-2"><ExternalLink className="size-4" /> Ver página</Button> : undefined}
       />
       <StatusMessage error={params.error} success={params.success} />
@@ -68,7 +68,7 @@ export default async function DashboardProfilePage({
             <Palette className="size-5" /> Alterar aparência
           </Button>
           <p className="px-2 text-sm leading-6 text-stone-500">
-            Use poucas informações e mantenha a bio objetiva. Os links são o foco principal da página.
+            Mantenha o perfil curto. O foco principal continua sendo os links.
           </p>
         </aside>
       </div>

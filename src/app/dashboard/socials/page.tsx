@@ -25,7 +25,7 @@ export default async function DashboardSocialsPage({
     <div className="grid gap-6">
       <DashboardHeader
         title="Redes sociais"
-        description="Conecte canais reais ao seu perfil para reforçar distribuição de audiência e prova social."
+        description="Conecte os canais que precisam aparecer na página pública."
       />
 
       <StatusMessage error={params.error} success={params.success} />
@@ -73,8 +73,8 @@ export default async function DashboardSocialsPage({
             ) : (
               <EmptyState
                 eyebrow="nenhuma rede conectada"
-                title="Adicione suas redes para ampliar a descoberta."
-                description="Instagram, LinkedIn, TikTok e outros canais ajudam a dar contexto e credibilidade à sua página pública."
+                title="Adicione as redes principais."
+                description="Instagram, LinkedIn, TikTok e outros canais ajudam a completar seu perfil."
               />
             )}
           </div>
@@ -85,7 +85,7 @@ export default async function DashboardSocialsPage({
             conectar nova rede
           </p>
           <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
-            Distribua o tráfego com intenção
+            Adicionar rede
           </h2>
           <form action={createSocialAction} className="mt-6 grid gap-4">
             <Field label="Plataforma">

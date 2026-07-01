@@ -89,7 +89,7 @@ export function DashboardSidebar({
           })}
         </nav>
 
-        <div className="mt-auto">
+        <div className="mt-auto border-t border-stone-200 pt-4">
           {publicUrl ? (
             <Link href={publicUrl} className="mb-3 flex h-11 items-center justify-center gap-2 rounded-xl border border-stone-200 text-sm font-semibold text-stone-700 transition hover:bg-stone-50">
               <ExternalLink className="size-4" /> Ver página
@@ -116,7 +116,7 @@ export function DashboardSidebar({
           const Icon = iconMap[section];
           const active = pathname === item.href;
           return (
-            <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} className={cn("flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-[0.65rem] font-semibold", active ? "text-[var(--brand-petrol)]" : "text-stone-500")}>
+            <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} className={cn("flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-[0.65rem] font-semibold", active ? "bg-[var(--brand-sage-soft)] text-[var(--brand-petrol)]" : "text-stone-500")}>
               <Icon className="size-[19px]" />
               <span className="max-w-full truncate">{item.label}</span>
             </Link>

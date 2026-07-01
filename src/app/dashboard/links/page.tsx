@@ -25,7 +25,7 @@ export default async function DashboardLinksPage({
     <div className="grid gap-5">
       <DashboardHeader
         title="Links"
-        description="Adicione, edite e reorganize o conteúdo da sua página."
+        description="Adicione, edite e reordene os links da sua página."
         action={
           <>
             <Button href="/dashboard/share" variant="secondary" className="gap-2">
@@ -96,7 +96,7 @@ export default async function DashboardLinksPage({
         <aside className="hidden lg:sticky lg:top-7 lg:block">
           <div className="mb-3 flex items-center justify-between">
             <p className="text-sm font-bold text-stone-900">Preview</p>
-            <span className="text-xs text-stone-500">Atualização automática</span>
+            <span className="text-xs text-stone-500">Ao vivo</span>
           </div>
           <div className="rounded-[2rem] border border-stone-200 bg-white p-4 shadow-sm">
             <PhoneMockup profile={toPreviewProfile(data)} compact />

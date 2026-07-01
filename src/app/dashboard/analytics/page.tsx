@@ -27,8 +27,8 @@ export default async function DashboardAnalyticsPage() {
   return (
     <div className="grid gap-6">
       <DashboardHeader
-        title="Insights"
-        description="Entenda a atividade da sua página, descubra quais conteúdos atraem atenção e decida o próximo ajuste com dados reais."
+        title="Métricas"
+        description="Veja visitas, cliques e os links com melhor resultado."
         action={
           dashboardData.publicUrl ? (
             <Button href={dashboardData.publicUrl} variant="secondary" className="gap-2">
@@ -63,10 +63,10 @@ export default async function DashboardAnalyticsPage() {
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
-                desempenho mensal
+                últimos 14 dias
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
-                Evolução de visitas e cliques
+                Cliques por dia
               </h2>
             </div>
             <div className="rounded-full border border-stone-200/70 bg-stone-50 px-4 py-2 text-sm text-stone-600">
@@ -97,7 +97,7 @@ export default async function DashboardAnalyticsPage() {
             top links
           </p>
           <h2 className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-stone-950">
-            Conteúdos com maior tração
+            Links com mais cliques
           </h2>
           <div className="mt-6 grid gap-4">
             {dashboardData.topLinks.length > 0 ? (
@@ -123,8 +123,8 @@ export default async function DashboardAnalyticsPage() {
             ) : (
               <EmptyState
                 eyebrow="sem dados ainda"
-                title="Seus insights aparecerão assim que os links começarem a receber visitas."
-                description="Publique pelo menos um link na página pública para começar a registrar cliques."
+                title="As métricas aparecem quando sua página começar a receber visitas."
+                description="Publique pelo menos um link para começar a registrar cliques."
               />
             )}
           </div>
@@ -140,10 +140,10 @@ export default async function DashboardAnalyticsPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">próxima melhor ação</p>
             <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-stone-950">
               {totalViews === 0
-                ? "Compartilhe seu QR Code para iniciar a coleta de audiência."
+                ? "Compartilhe sua página para começar a gerar audiência."
                 : totalClicks === 0
-                  ? "Teste um título mais direto no primeiro link para gerar o clique inicial."
-                  : "Destaque o link com mais cliques e mantenha a oferta principal no topo."}
+                  ? "Ajuste o primeiro link com um título mais direto."
+                  : "Mantenha o link com melhor resultado no topo."}
             </h2>
           </div>
           <Button href={totalViews === 0 ? "/dashboard/share" : "/dashboard/links"} variant="secondary">

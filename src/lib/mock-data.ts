@@ -129,9 +129,9 @@ export const featureItems: FeatureItem[] = [
 
 export const dashboardNav: NavItem[] = [
   { label: "Links", href: "/dashboard/links", section: "links" },
-  { label: "Aparência", href: "/dashboard/design", section: "themes" },
-  { label: "Perfil e redes", href: "/dashboard/profile", section: "profile" },
-  { label: "Insights", href: "/dashboard/insights", section: "analytics" },
+  { label: "Visual", href: "/dashboard/design", section: "themes" },
+  { label: "Perfil", href: "/dashboard/profile", section: "profile" },
+  { label: "Métricas", href: "/dashboard/insights", section: "analytics" },
   { label: "Compartilhar", href: "/dashboard/share", section: "share" },
   { label: "Configurações", href: "/dashboard/settings", section: "settings" },
 ];

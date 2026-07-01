@@ -24,7 +24,7 @@ export default async function DashboardSettingsPage({
     <div className="grid gap-6">
       <DashboardHeader
         title="Configurações"
-        description="Gerencie a publicação da página e sua sessão."
+        description="Controle a publicação da página e sua sessão."
       />
 
       <StatusMessage error={params.error} success={params.success} />
@@ -45,7 +45,7 @@ export default async function DashboardSettingsPage({
                 defaultChecked={dashboardData.profile?.is_published ?? true}
                 className="mt-1 size-4 rounded border-stone-300"
               />
-              Manter a página pública visível para visitantes anônimos.
+              Página pública visível para visitantes.
             </label>
             <SubmitButton label="Salvar" pendingLabel="Salvando..." />
           </form>
