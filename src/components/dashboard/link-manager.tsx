@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ExternalLink, GripVertical, Pencil, Star } from "lucide-react";
+import { Check, Copy, ExternalLink, GripVertical, Pencil, Star } from "lucide-react";
 
 import {
   deleteLinkAction,
@@ -50,6 +50,13 @@ function SortableLink({ link }: { link: DashboardLink }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: link.id,
   });
+  const [copied, setCopied] = useState(false);
+
+  async function copyLinkUrl() {
+    await navigator.clipboard.writeText(link.url);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
+  }
 
   return (
     <article
@@ -100,22 +107,33 @@ function SortableLink({ link }: { link: DashboardLink }) {
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2 border-t border-[var(--brand-line)] pt-3">
-        <Button href={link.url} variant="secondary" className="gap-2">
-          Abrir <ExternalLink className="size-4" />
-        </Button>
-        <form action={toggleLinkAction}>
-          <input type="hidden" name="linkId" value={link.id} />
-          <input type="hidden" name="nextValue" value={String(!link.is_active)} />
-          <SubmitButton
-            label={link.is_active ? "Pausar" : "Ativar"}
-            pendingLabel="Atualizando..."
-            variant="secondary"
-          />
-        </form>
-        <details className="group w-full sm:w-auto">
+      <div className="mt-4 border-t border-[var(--brand-line)] pt-3">
+        <div className="grid gap-2 sm:flex sm:flex-wrap">
+          <button
+            type="button"
+            onClick={copyLinkUrl}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-[1rem] border border-[var(--brand-line)] bg-white px-4 text-sm font-semibold text-[var(--brand-ink)] transition hover:border-[var(--brand-petrol)]"
+          >
+            {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
+            {copied ? "URL copiada" : "Copiar URL"}
+          </button>
+          <Button href={link.url} variant="secondary" className="gap-2">
+            Abrir <ExternalLink className="size-4" />
+          </Button>
+          <form action={toggleLinkAction}>
+            <input type="hidden" name="linkId" value={link.id} />
+            <input type="hidden" name="nextValue" value={String(!link.is_active)} />
+            <SubmitButton
+              label={link.is_active ? "Pausar" : "Ativar"}
+              pendingLabel="Atualizando..."
+              variant="secondary"
+            />
+          </form>
+        </div>
+
+        <details className="group mt-3">
           <summary className="inline-flex h-11 cursor-pointer list-none items-center justify-center gap-2 rounded-[1rem] border border-[var(--brand-line)] bg-white px-5 text-sm font-semibold text-[var(--brand-ink)] transition hover:border-[var(--brand-petrol)]">
-            <Pencil className="size-4" /> Editar
+            <Pencil className="size-4" /> Edição rápida
           </summary>
           <form
             action={updateLinkAction}
@@ -130,25 +148,6 @@ function SortableLink({ link }: { link: DashboardLink }) {
               URL
               <input className={inputClassName} name="url" type="url" defaultValue={link.url} required />
             </label>
-            <label className="grid gap-1.5 text-sm font-medium sm:col-span-2">
-              Descrição
-              <input className={inputClassName} name="description" defaultValue={link.description} maxLength={140} />
-            </label>
-            <label className="grid gap-1.5 text-sm font-medium">
-              Thumbnail
-              <input className={inputClassName} name="thumbnailUrl" type="url" defaultValue={link.thumbnail_url ?? ""} />
-            </label>
-            <div className="sm:col-span-2">
-              <IconPicker name="icon" defaultValue={link.icon ?? "link"} />
-            </div>
-            <label className="grid gap-1.5 text-sm font-medium">
-              Publicar em
-              <input className={inputClassName} name="scheduledAt" type="datetime-local" defaultValue={toLocalDateTime(link.scheduled_at)} />
-            </label>
-            <label className="grid gap-1.5 text-sm font-medium">
-              Expirar em
-              <input className={inputClassName} name="expiresAt" type="datetime-local" defaultValue={toLocalDateTime(link.expires_at)} />
-            </label>
             <div className="flex flex-wrap items-center gap-5 sm:col-span-2">
               <label className="flex items-center gap-2 text-sm font-medium">
                 <input type="checkbox" name="active" defaultChecked={link.is_active} className="size-4 accent-[var(--brand-petrol)]" />
@@ -159,15 +158,44 @@ function SortableLink({ link }: { link: DashboardLink }) {
                 Destacar
               </label>
             </div>
+
+            <details className="sm:col-span-2">
+              <summary className="cursor-pointer text-sm font-semibold text-stone-500">
+                Ajustes avançados
+              </summary>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-1.5 text-sm font-medium sm:col-span-2">
+                  Descrição
+                  <input className={inputClassName} name="description" defaultValue={link.description} maxLength={140} />
+                </label>
+                <label className="grid gap-1.5 text-sm font-medium">
+                  Thumbnail
+                  <input className={inputClassName} name="thumbnailUrl" type="url" defaultValue={link.thumbnail_url ?? ""} />
+                </label>
+                <div className="sm:col-span-2">
+                  <IconPicker name="icon" defaultValue={link.icon ?? "link"} />
+                </div>
+                <label className="grid gap-1.5 text-sm font-medium">
+                  Publicar em
+                  <input className={inputClassName} name="scheduledAt" type="datetime-local" defaultValue={toLocalDateTime(link.scheduled_at)} />
+                </label>
+                <label className="grid gap-1.5 text-sm font-medium">
+                  Expirar em
+                  <input className={inputClassName} name="expiresAt" type="datetime-local" defaultValue={toLocalDateTime(link.expires_at)} />
+                </label>
+              </div>
+            </details>
+
             <div className="sm:col-span-2">
               <SubmitButton label="Salvar alterações" pendingLabel="Salvando..." />
             </div>
           </form>
+
+          <form action={deleteLinkAction} className="mt-3">
+            <input type="hidden" name="linkId" value={link.id} />
+            <SubmitButton label="Remover link" pendingLabel="Removendo..." variant="ghost" />
+          </form>
         </details>
-        <form action={deleteLinkAction} className="ml-auto">
-          <input type="hidden" name="linkId" value={link.id} />
-          <SubmitButton label="Remover" pendingLabel="Removendo..." variant="ghost" />
-        </form>
       </div>
     </article>
   );
