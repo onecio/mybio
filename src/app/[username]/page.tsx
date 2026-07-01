@@ -14,6 +14,7 @@ import { ResilientImage } from "@/components/ui/resilient-image";
 import { SurfaceCard } from "@/components/ui/surface-card";
 import { getPlatformIconOption, renderPlatformIcon } from "@/lib/platform-icons";
 import { getPublicProfileByUsername } from "@/lib/queries/mybio";
+import { getAbsoluteUrl } from "@/lib/supabase/config";
 
 export async function generateMetadata({
   params,
@@ -29,23 +30,25 @@ export async function generateMetadata({
 
   const title = profile.title;
   const description = profile.description.slice(0, 160);
+  const canonicalUrl = getAbsoluteUrl(`/${profile.username}`);
+  const ogImageUrl = getAbsoluteUrl(`/api/og/${profile.username}`);
 
   return {
     title,
     description,
-    alternates: { canonical: `/${profile.username}` },
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       type: "profile",
       title,
       description,
-      url: `/${profile.username}`,
-      images: profile.avatarUrl ? [{ url: profile.avatarUrl, alt: title }] : undefined,
+      url: canonicalUrl,
+      images: [{ url: ogImageUrl, alt: `${title} no MyBio` }],
     },
     twitter: {
-      card: profile.avatarUrl ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title,
       description,
-      images: profile.avatarUrl ? [profile.avatarUrl] : undefined,
+      images: [ogImageUrl],
     },
   };
 }
@@ -69,6 +72,7 @@ export default async function PublicProfilePage({
   const priorityContacts = profile.socials.filter((social) =>
     ["email", "whatsapp", "telegram", "website"].includes(social.platform),
   );
+  const primaryAction = priorityContacts[0];
 
   return (
     <main className="page-shell min-h-screen px-4 py-6 md:px-6 md:py-8" style={themeStyle}>
@@ -110,7 +114,17 @@ export default async function PublicProfilePage({
               {profile.description}
             </p>
 
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
+            {primaryAction ? (
+              <a
+                href={primaryAction.url}
+                className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--brand-petrol)] px-5 py-3 text-sm font-semibold text-white shadow-[0_20px_40px_-28px_rgba(15,23,42,0.45)] transition hover:bg-[var(--brand-copper)]"
+              >
+                {renderPlatformIcon(primaryAction.platform, "size-4")}
+                {primaryAction.platform === "email" ? "Entrar em contato" : "Abrir contato principal"}
+              </a>
+            ) : null}
+
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
               {priorityContacts.slice(0, 2).map((social) => {
                 const Icon = getPlatformIconOption(social.platform).icon;
 
@@ -118,15 +132,19 @@ export default async function PublicProfilePage({
                   <a
                     key={`priority-${social.id}`}
                     href={social.url}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brand-petrol)] px-5 py-3 text-sm font-semibold text-white shadow-[0_20px_40px_-28px_rgba(15,23,42,0.45)] transition hover:bg-[var(--brand-copper)]"
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-white/70 bg-white/85 px-4 py-2 text-sm font-medium text-stone-700 shadow-[0_14px_34px_-26px_rgba(15,23,42,0.3)]"
                   >
                     <Icon className="size-4" />
-                    {social.platform === "email" ? "Entrar em contato" : "Falar agora"}
+                    {social.handle}
                   </a>
                 );
               })}
 
               {profile.socials.map((social) => {
+                if (social.id === primaryAction?.id) {
+                  return null;
+                }
+
                 const Icon = getPlatformIconOption(social.platform).icon;
 
                 return (

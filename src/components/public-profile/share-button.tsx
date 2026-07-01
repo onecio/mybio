@@ -25,6 +25,7 @@ export function PublicShareButton({ title }: { title: string }) {
       onClick={share}
       aria-label="Compartilhar perfil"
       className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-[var(--brand-line)] bg-white/80 px-4 text-sm font-semibold text-[var(--brand-ink)] shadow-sm transition hover:-translate-y-0.5"
+      title={copied ? "Link copiado para a área de transferência" : "Compartilhar ou copiar o link do perfil"}
     >
       {copied ? <Check className="size-4" /> : <Share2 className="size-4" />}
       {copied ? "Link copiado" : "Compartilhar"}

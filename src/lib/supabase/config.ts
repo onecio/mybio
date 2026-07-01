@@ -18,3 +18,8 @@ export function getSiteUrl() {
 
   return siteUrl.replace(/\/$/, "");
 }
+
+export function getAbsoluteUrl(pathname = "/") {
+  const normalizedPathname = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  return `${getSiteUrl()}${normalizedPathname}`;
+}
