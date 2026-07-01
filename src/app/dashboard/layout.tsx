@@ -29,21 +29,16 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     "Meu MyBio";
 
   return (
-    <div className="page-shell min-h-screen px-3 py-3 pb-24 sm:px-4 sm:py-4 sm:pb-24 md:px-6 md:py-6 md:pb-24 lg:pb-6">
-      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-1.5rem)] w-full max-w-7xl gap-4 sm:gap-6 lg:min-h-[calc(100vh-3rem)] lg:grid-cols-[minmax(280px,300px)_minmax(0,1fr)]">
+    <div className="min-h-screen bg-[#f6f6f4] pb-20 lg:pb-0">
+      <div className="mx-auto grid min-h-screen w-full max-w-[1600px] lg:grid-cols-[248px_minmax(0,1fr)]">
         <DashboardSidebar
           name={name}
           username={dashboardData.profile?.username ?? "meu-mybio"}
-          headline={
-            dashboardData.profile?.description ??
-            "Personalize sua página pública com backend real e dados sincronizados."
-          }
           initials={getInitials(name)}
           avatarUrl={dashboardData.profile?.avatar_url}
           publicUrl={dashboardData.publicUrl}
-          isPublished={Boolean(dashboardData.profile?.is_published)}
         />
-        <section className="min-w-0 overflow-x-clip">{children}</section>
+        <main className="min-w-0 overflow-x-clip px-4 py-5 sm:px-6 lg:px-8 lg:py-7">{children}</main>
       </div>
     </div>
   );

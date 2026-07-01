@@ -8,6 +8,14 @@ function hasSupabaseEnv() {
   return getSupabaseConfig().isConfigured;
 }
 
+function redirectWithSession(url: URL, sessionResponse: NextResponse) {
+  const redirectResponse = NextResponse.redirect(url);
+  sessionResponse.cookies.getAll().forEach((cookie) => {
+    redirectResponse.cookies.set(cookie);
+  });
+  return redirectResponse;
+}
+
 export async function updateSession(request: NextRequest) {
   const response = NextResponse.next({
     request: {
@@ -54,14 +62,14 @@ export async function updateSession(request: NextRequest) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("next", request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
+    return redirectWithSession(loginUrl, response);
   }
 
   if (isAuthPage && user && pathname !== "/update-password") {
     const dashboardUrl = request.nextUrl.clone();
     dashboardUrl.pathname = "/dashboard";
     dashboardUrl.searchParams.delete("next");
-    return NextResponse.redirect(dashboardUrl);
+    return redirectWithSession(dashboardUrl, response);
   }
 
   return response;

@@ -16,8 +16,8 @@ export default async function UpdatePasswordPage({
   return (
     <AuthShell
       eyebrow="nova senha"
-      title="Defina uma nova senha com segurança."
-      description="Se você veio do e-mail de recuperação, finalize aqui a troca de senha para voltar ao painel."
+      title="Nova senha"
+      description="Use pelo menos 8 caracteres."
       footer={
         <p>
           Precisa voltar?{" "}
@@ -27,18 +27,6 @@ export default async function UpdatePasswordPage({
         </p>
       }
     >
-      <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-stone-400">
-          recuperação ativa
-        </p>
-        <h2 className="text-3xl font-semibold tracking-[-0.04em] text-stone-950">
-          Atualize sua senha
-        </h2>
-        <p className="text-sm leading-7 text-stone-600">
-          Use uma senha forte com pelo menos 8 caracteres para concluir o processo.
-        </p>
-      </div>
-
       <form action={updatePasswordAction} className="grid gap-4">
         <StatusMessage error={params.error} success={params.success} />
         <Field label="Nova senha">
@@ -52,7 +40,7 @@ export default async function UpdatePasswordPage({
             required
           />
         </Field>
-        <SubmitButton label="Atualizar senha" pendingLabel="Atualizando..." size="lg" className="mt-2" />
+        <SubmitButton label="Salvar nova senha" pendingLabel="Atualizando..." size="lg" className="mt-2 w-full" />
       </form>
     </AuthShell>
   );

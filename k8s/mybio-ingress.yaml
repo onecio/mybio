@@ -7,6 +7,10 @@ metadata:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
 spec:
   ingressClassName: traefik
+  tls:
+    - hosts:
+        - mybio.ecomnix.com.br
+      secretName: mybio-origin-tls
   rules:
     - host: mybio.ecomnix.com.br
       http:
