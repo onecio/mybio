@@ -7,6 +7,7 @@ import {
   Link2,
   Palette,
   Settings,
+  Share2,
   Sparkles,
   UserRound,
   Users,
@@ -24,6 +25,7 @@ const iconMap = {
   links: Link2,
   socials: Users,
   themes: Palette,
+  share: Share2,
   analytics: BarChart3,
   settings: Settings,
 } as const;
@@ -33,7 +35,7 @@ const mobileNav = [
   { label: "Perfil", href: "/dashboard/profile", section: "profile" },
   { label: "Links", href: "/dashboard/links", section: "links" },
   { label: "Visual", href: "/dashboard/themes", section: "themes" },
-  { label: "Dados", href: "/dashboard/analytics", section: "analytics" },
+  { label: "Insights", href: "/dashboard/insights", section: "analytics" },
 ] as const;
 
 interface DashboardSidebarProps {
@@ -71,6 +73,13 @@ export function DashboardSidebar({
               <ExternalLink className="size-4" />
             </Link>
           ) : null}
+          <Link
+            href="/dashboard/share"
+            aria-label="Compartilhar página"
+            className="grid size-10 place-items-center rounded-xl border border-[var(--brand-line)] bg-white text-[var(--brand-petrol)]"
+          >
+            <Share2 className="size-4" />
+          </Link>
           <Link
             href="/dashboard/settings"
             aria-label="Configurações"

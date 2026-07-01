@@ -27,7 +27,7 @@ export default async function DashboardLinksPage({
         title="Links e conteúdo"
         description="Organize sua jornada, programe campanhas e destaque o que merece atenção. Cada alteração atualiza sua página pública."
         action={
-          <Button href="/dashboard/analytics" variant="secondary" className="gap-2">
+          <Button href="/dashboard/insights" variant="secondary" className="gap-2">
             <BarChart3 className="size-4" /> Ver resultados
           </Button>
         }
