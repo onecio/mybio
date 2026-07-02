@@ -5,6 +5,9 @@ metadata:
   namespace: applications
   labels:
     app: mybio
+    app.kubernetes.io/name: mybio
+    app.kubernetes.io/component: service
+    app.kubernetes.io/part-of: mybio-platform
 spec:
   type: ClusterIP
   selector:

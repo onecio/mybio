@@ -3,8 +3,14 @@ kind: Ingress
 metadata:
   name: mybio
   namespace: applications
+  labels:
+    app: mybio
+    app.kubernetes.io/name: mybio
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/part-of: mybio-platform
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   ingressClassName: traefik
   tls:

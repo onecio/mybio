@@ -13,6 +13,10 @@ concurrency:
   group: publish-container-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/mybio
+  DOCKER_METADATA_SHORT_SHA_LENGTH: 12
+
 permissions:
   contents: read
 
@@ -70,10 +74,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/mybio
+          images: ${{ env.REGISTRY_IMAGE }}
           tags: |
-            type=raw,value=latest
-            type=sha,prefix=sha-
+            type=sha,format=short,prefix=sha-
 
       - name: Build and push image
         uses: docker/build-push-action@v6
@@ -85,3 +88,11 @@ jobs:
           sbom: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Publish deployment hint
+        run: |
+          echo "Imagem publicada:" >> $GITHUB_STEP_SUMMARY
+          echo "\`${{ env.REGISTRY_IMAGE }}:sha-${GITHUB_SHA::12}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Exemplo de rollout manual:" >> $GITHUB_STEP_SUMMARY
+          echo "\`kubectl set image deployment/mybio mybio=${{ env.REGISTRY_IMAGE }}:sha-${GITHUB_SHA::12} -n applications\`" >> $GITHUB_STEP_SUMMARY

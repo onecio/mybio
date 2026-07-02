@@ -3,6 +3,11 @@ kind: ConfigMap
 metadata:
   name: mybio-config
   namespace: applications
+  labels:
+    app: mybio
+    app.kubernetes.io/name: mybio
+    app.kubernetes.io/component: configuration
+    app.kubernetes.io/part-of: mybio-platform
 data:
   NODE_ENV: "production"
   PORT: "3000"

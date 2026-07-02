@@ -78,6 +78,19 @@ O projeto suporta e-mail/senha e OAuth com Google ou GitHub. Para o ambiente de 
 
 Nunca armazene Client Secrets, service role keys ou senhas no repositório. As chaves públicas do Supabase podem ficar no `ConfigMap`; segredos administrativos devem ficar no `Secret` do cluster.
 
+## Operação em Kubernetes Free Tier
+
+Para operação didática e reproduzível do ambiente K3s/Oracle Free Tier, use o runbook:
+
+- [docs/k3s-free-tier-runbook-2026-07-02.md](C:\Users\oneci\AppData\Roaming\TRAE SOLO\ModularData\ai-agent\work-mode-projects\6a42db49feaa591488c86942\mybio-premium\docs\k3s-free-tier-runbook-2026-07-02.md)
+
+Resumo do padrão atual:
+
+- o GitHub Actions gera a imagem de produção;
+- a tag de produção deve ser `sha-<12>` e não `latest`;
+- o cluster deve usar `imagePullPolicy: IfNotPresent`;
+- o rollout do MyBio em Free Tier prioriza economia de memória.
+
 ## Scripts
 
 ```bash
